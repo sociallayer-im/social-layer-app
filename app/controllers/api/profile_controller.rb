@@ -4,6 +4,19 @@ class Api::ProfileController < ApiController
     render json: "ok"
   end
 
+  def signin
+    render layout: false
+  end
+
+  def nonce
+    render json: {nonce: Siwe::Util.generate_nonce}
+
+  end
+
+  def verify
+    render json: {result: "ok"}
+  end
+
   def list
     render json: "ok"
   end

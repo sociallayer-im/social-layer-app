@@ -5,6 +5,10 @@ Rails.application.routes.draw do
   root "api/profile#home"
 
   namespace :api, path: "" do
+    get "profile/signin", to: "profile#signin"
+    get "siwe/nonce", to: "profile#nonce"
+    post "siwe/verify", to: "profile#verify"
+
     get "profile/list", to: "profile#list"
     get "profile/get", to: "profile#get"
     post "profile/create", to: "profile#create"

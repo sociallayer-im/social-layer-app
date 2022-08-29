@@ -1,0 +1,2 @@
+class BadgeTemplate < ApplicationRecord
+end

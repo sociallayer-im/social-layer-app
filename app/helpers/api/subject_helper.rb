@@ -1,0 +1,2 @@
+module Api::SubjectHelper
+end

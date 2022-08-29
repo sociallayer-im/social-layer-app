@@ -1,8 +1,4 @@
-class Api::ProfileController < ApiController
-
-  def home
-    render json: "ok"
-  end
+class Api::BadgeController < ApplicationController
 
   def list
     render json: "ok"
@@ -12,11 +8,16 @@ class Api::ProfileController < ApiController
     render json: "ok"
   end
 
-  def update
-    render json: "ok"
-  end
-
   def create
     render json: "ok"
   end
+
+  def send_badge
+    render json: "ok"
+  end
+
+  def accept_badge
+    render json: "ok"
+  end
+
 end

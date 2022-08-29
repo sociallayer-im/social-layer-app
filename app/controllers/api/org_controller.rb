@@ -1,6 +1,6 @@
-class Api::ProfileController < ApiController
+class Api::OrgController < ApplicationController
 
-  def home
+  def get
     render json: "ok"
   end
 
@@ -8,15 +8,20 @@ class Api::ProfileController < ApiController
     render json: "ok"
   end
 
-  def get
-    render json: "ok"
-  end
-
-  def update
-    render json: "ok"
-  end
-
   def create
     render json: "ok"
   end
+
+  def members
+    render json: "ok"
+  end
+
+  def add_member
+    render json: "ok"
+  end
+
+  def remove_member
+    render json: "ok"
+  end
+
 end

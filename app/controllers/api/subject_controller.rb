@@ -1,8 +1,4 @@
-class Api::ProfileController < ApiController
-
-  def home
-    render json: "ok"
-  end
+class Api::SubjectController < ApplicationController
 
   def list
     render json: "ok"
@@ -19,4 +15,5 @@ class Api::ProfileController < ApiController
   def create
     render json: "ok"
   end
+
 end

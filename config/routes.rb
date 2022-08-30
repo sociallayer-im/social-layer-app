@@ -9,6 +9,8 @@ Rails.application.routes.draw do
     get "siwe/nonce", to: "profile#nonce"
     post "siwe/verify", to: "profile#verify"
 
+    post "upload/image", to: "profile#upload_image"
+
     get "profile/list", to: "profile#list"
     get "profile/get", to: "profile#get"
     post "profile/create", to: "profile#create"

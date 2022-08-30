@@ -1,5 +1,6 @@
 require 'jwt'
 
+
 class Api::ProfileController < ApiController
 
   def home
@@ -8,6 +9,18 @@ class Api::ProfileController < ApiController
 
   def signin
     render layout: false
+  end
+
+  # http -f POST "localhost:3000/upload/image" uploader==0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4 resource==badge data@./WechatIMG413.png
+  def upload_image
+    imagekitio = ImageKitIo::Client.new(ENV["IMAGEKIT_PRIVATE_KEY"], ENV["IMAGEKIT_PUBLIC_KEY"], ENV["IMAGEKIT_URL_ENDPOINT"])
+    upload = imagekitio.upload_file(
+        file: params[:data],
+        file_name: params[:resource],
+        response_fields: 'tags,customCoordinates,isPrivateFile,metadata',
+        tags: [],
+    )
+    render json: {result: upload[:response]}
   end
 
   def nonce
@@ -34,6 +47,9 @@ class Api::ProfileController < ApiController
         # Used when the signature doesn't correspond to the address of the message.
         render json: {result: "error", message: "Siwe::InvalidSignature"}
     end
+  end
+
+  def current
   end
 
   # http GET "localhost:3000/profile/list"

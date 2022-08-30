@@ -1,5 +1,6 @@
 require 'jwt'
 
+$hmac_secret = Rails.application.secret_key_base
 
 class Api::ProfileController < ApiController
 
@@ -34,8 +35,8 @@ class Api::ProfileController < ApiController
       message.verify(signature, message.domain, message.issued_at, message.nonce)
 
       payload = {address: message.address}
-      hmac_secret = Rails.application.secret_key_base
-      token = JWT.encode payload, hmac_secret, 'HS256'
+      $hmac_secret = Rails.application.secret_key_base
+      token = JWT.encode payload, $hmac_secret, 'HS256'
       render json: {result: "ok", auth_token: token}
     rescue Siwe::ExpiredMessage
         # Used when the message is already expired. (Expires At < Time.now)
@@ -50,6 +51,7 @@ class Api::ProfileController < ApiController
   end
 
   def current
+    render json: current_address!
   end
 
   # http GET "localhost:3000/profile/list"

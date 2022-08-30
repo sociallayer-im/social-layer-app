@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     get "profile/signin", to: "profile#signin"
     get "siwe/nonce", to: "profile#nonce"
     post "siwe/verify", to: "profile#verify"
+    get "siwe/current", to: "profile#current"
 
     post "upload/image", to: "profile#upload_image"
 

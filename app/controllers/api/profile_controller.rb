@@ -67,7 +67,6 @@ class Api::ProfileController < ApiController
     render json: {profiles: profiles}
   end
 
-
   # http GET "localhost:3000/profile/get" address==0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
   # http GET "localhost:3000/profile/get" username==coder
   # http GET "localhost:3000/profile/get" domain==coder.sociallayer.im

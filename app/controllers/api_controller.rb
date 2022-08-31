@@ -5,6 +5,10 @@ $hmac_secret = Rails.application.secret_key_base
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
 
+  def check_address(addr)
+    (addr =~ /^0x[a-fA-F0-9]{40}$/) == 0
+  end
+
   def current_address
     return @address if @address
 

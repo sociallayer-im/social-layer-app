@@ -29,6 +29,8 @@ class Api::BadgeController < ApiController
   def create
     profile = current_profile!
 
+    raise ActionController::ActionControllerError.new("invalid receiver id") unless check_address(params[:receiver_id])
+
     badge = Badge.create(
       name: params[:name],
       domain: params[:domain], # todo: verify user have parent domain name
@@ -40,9 +42,9 @@ class Api::BadgeController < ApiController
       template_id: params[:template_id],
       subject_id: params[:subject_id],
       org_id: params[:org_id],
-      issuer_id: params[:issuer_id],
+      issuer_id: profile.address,
       receiver_id: params[:receiver_id],
-      owner_id: profile.address,
+      owner_id: params[:receiver_id],
       )
     render json: {badge: badge.as_json}
   end

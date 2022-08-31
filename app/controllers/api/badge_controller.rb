@@ -27,6 +27,8 @@ class Api::BadgeController < ApiController
 
   # http POST "localhost:3000/badge/create" issuer_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodBadge title=GoodBadge domain=goodbadge content=goodbadge image_url=http://example.com/img.jpg
   def create
+    profile = current_profile!
+
     badge = Badge.create(
       name: params[:name],
       domain: params[:domain], # todo: verify user have parent domain name
@@ -40,21 +42,29 @@ class Api::BadgeController < ApiController
       org_id: params[:org_id],
       issuer_id: params[:issuer_id],
       receiver_id: params[:receiver_id],
-      owner_id: params[:owner_id],
+      owner_id: profile.address,
       )
     render json: {badge: badge.as_json}
   end
 
   # http POST "localhost:3000/badge/send" id=1 receiver_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 content=some_reason
   def send_badge
+    profile = current_profile!
+
     badge = Badge.find(params[:id])
+    raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address
+
     badge.update(status: "pending", content: params[:content], receiver_id: params[:receiver_id], owner_id: params[:receiver_id])
     render json: {badge: badge.as_json}
   end
 
   # http POST "localhost:3000/badge/accept" id=1
   def accept_badge
+    profile = current_profile!
+
     badge = Badge.find(params[:id])
+    raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address
+
     badge.update(status: "accepted")
     render json: {badge: badge.as_json}
   end

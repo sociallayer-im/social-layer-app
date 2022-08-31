@@ -14,12 +14,14 @@ class Api::ProfileController < ApiController
 
   # http -f POST "localhost:3000/upload/image" uploader==0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4 resource==badge data@./WechatIMG413.png
   def upload_image
+    profile = current_profile!
+
     imagekitio = ImageKitIo::Client.new(ENV["IMAGEKIT_PRIVATE_KEY"], ENV["IMAGEKIT_PUBLIC_KEY"], ENV["IMAGEKIT_URL_ENDPOINT"])
     upload = imagekitio.upload_file(
         file: params[:data],
         file_name: params[:resource],
         response_fields: 'tags,customCoordinates,isPrivateFile,metadata',
-        tags: [],
+        tags: [profile.address],
     )
     render json: {result: upload[:response]}
   end
@@ -84,7 +86,8 @@ class Api::ProfileController < ApiController
   # notice: image_url instead of imageUrl
   # http POST "localhost:3000/profile/update" image_url=http://example.com/img.jpg address=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
   def update
-    profile = Profile.where(address: params[:address]).first
+    # profile = Profile.where(address: params[:address]).first
+    profile = current_profile!
     profile.update(image_url: params[:image_url])
     render json: {profile: profile.as_json
     }
@@ -92,13 +95,15 @@ class Api::ProfileController < ApiController
 
   # http POST "localhost:3000/profile/create" address=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 username=coder
   def create
+    current_address!
+
     unless params[:username].length >=4 && /[a-z0-9]+([\-\.]{1}[a-z0-9]+)*/.match(params[:username]).to_s == params[:username]
       render json: {result: "error", message: "invalid username"}
       return
     end
 
     domain = "#{params[:username]}.sociallayer.im"
-    Profile.create(address: params[:address], username: params[:username], domain: domain)
+    Profile.create(address: current_address, username: params[:username], domain: domain)
     render json: {result: "ok"}
   end
 end

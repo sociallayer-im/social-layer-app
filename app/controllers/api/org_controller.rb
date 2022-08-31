@@ -14,13 +14,25 @@ class Api::OrgController < ApiController
 
   # http POST "localhost:3000/org/create" owner_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodOrg
   def create
+    profile = current_profile!
+
     org = Org.create(
       name: params[:name],
-      owner_id: params[:owner_id],
+      owner_id: profile.address,
       image_url: params[:image_url],
       content: params[:content],
       metadata: params[:metadata],
       )
+    render json: {org: org.as_json}
+  end
+
+  def update
+    # profile = Profile.where(address: params[:address]).first
+    profile = current_profile!
+    org = Org.find(params[:org_id])
+    raise ActionController::ActionControllerError.new("access denied") unless org.owner_id == profile.address
+
+    org.update(content: params[:content], image_url: params[:image_url])
     render json: {org: org.as_json}
   end
 
@@ -32,10 +44,14 @@ class Api::OrgController < ApiController
 
   # http POST "localhost:3000/org/add-member" org_id=1 address=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
   def add_member
-    profile = Profile.find_by(address: params[:address])
-    if profile
-      unless Membership.find_by(org_id: params[:org_id], profile_id: profile.id)
-        Membership.create(org_id: params[:org_id], profile_id: profile.id)
+    profile = current_profile!
+    org = Org.find(params[:org_id])
+    raise ActionController::ActionControllerError.new("access denied") unless org.owner_id == profile.address
+
+    member = Profile.find_by(address: params[:address])
+    if member
+      unless Membership.find_by(org_id: params[:org_id], profile_id: member.id)
+        Membership.create(org_id: params[:org_id], profile_id: member.id)
       end
       render json: {result: "ok"}
     else
@@ -45,6 +61,10 @@ class Api::OrgController < ApiController
 
   # http POST "localhost:3000/org/remove-member" org_id=1 address=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
   def remove_member
+    profile = current_profile!
+    org = Org.find(params[:org_id])
+    raise ActionController::ActionControllerError.new("access denied") unless org.owner_id == profile.address
+
     results = Membership.where(org_id: params[:org_id], profile_id: params[:profile_id]).delete_all
     render json: {result: "ok"}
   end

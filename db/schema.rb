@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_29_160109) do
+ActiveRecord::Schema[7.0].define(version: 2022_08_31_060610) do
   create_table "badge_templates", force: :cascade do |t|
     t.string "name"
     t.string "content"
@@ -53,6 +53,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_29_160109) do
     t.text "content"
     t.text "metadata"
     t.datetime "created_at"
+    t.index ["name"], name: "index_orgs_on_name", unique: true
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -62,6 +63,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_29_160109) do
     t.string "image_url"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["address"], name: "index_profiles_on_address", unique: true
+    t.index ["domain"], name: "index_profiles_on_domain", unique: true
+    t.index ["username"], name: "index_profiles_on_username", unique: true
   end
 
   create_table "subjects", force: :cascade do |t|

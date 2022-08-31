@@ -36,4 +36,4 @@
 
 .DS_Store
 .env
-siwe_app/
+siwe_app/node_modules/

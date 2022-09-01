@@ -52,7 +52,7 @@ class Api::BadgeController < ApiController
     raise ActionController::ActionControllerError.new("invalid receiver id") unless check_address(params[:receiver_id])
 
     badge = Badge.find(params[:id])
-    raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address
+    raise ActionController::ActionControllerError.new("access denied") unless badge.issuer_id == profile.address
 
     badge.update(status: "pending", content: params[:content], receiver_id: params[:receiver_id], owner_id: params[:receiver_id])
     render json: {badge: badge.as_json}

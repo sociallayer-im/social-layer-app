@@ -1,15 +1,6 @@
 require "test_helper"
-require 'jwt'
-
-$hmac_secret = Rails.application.secret_key_base
-$account_addr = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
 
 class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
-  def gen_auth_code(addr)
-    payload = {address: addr}
-    $hmac_secret = Rails.application.secret_key_base
-    JWT.encode payload, $hmac_secret, 'HS256'
-  end
 
   test "api#profile/home" do
     get root_url
@@ -39,6 +30,10 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
     p response.body
 
     get api_profile_get_url, params: {username: "coder"}
+    assert_response :success
+    p response.body
+
+    get api_profile_search_url, params: {username: "cod"}
     assert_response :success
     p response.body
   end

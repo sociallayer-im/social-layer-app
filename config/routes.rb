@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     post "upload/image", to: "profile#upload_image"
 
     get "profile/list", to: "profile#list"
+    get "profile/search", to: "profile#search"
     get "profile/get", to: "profile#get"
     post "profile/create", to: "profile#create"
     post "profile/update", to: "profile#update"
@@ -26,10 +27,12 @@ Rails.application.routes.draw do
     post "subject/create", to: "subject#create"
 
     get "badge/list", to: "badge#list"
+    get "badge/search", to: "badge#search"
     get "badge/get", to: "badge#get"
     post "badge/create", to: "badge#create"
     post "badge/send", to: "badge#send_badge"
     post "badge/accept", to: "badge#accept_badge"
+    post "badge/reject", to: "badge#reject_badge"
 
     get "org/list", to: "org#list"
     get "org/get", to: "org#get"

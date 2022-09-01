@@ -19,6 +19,12 @@ class Api::BadgeController < ApiController
     render json: {badges: badges.all.as_json}
   end
 
+  def search
+    badges = Badge.where("username LIKE ?", "%" + params[:username] + "%")
+
+    render json: {badges: badges}
+  end
+
   # http GET "localhost:3000/badge/get" id==1
   def get
     badge = Badge.find(params[:id])
@@ -66,6 +72,17 @@ class Api::BadgeController < ApiController
     raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address
 
     badge.update(status: "accepted")
+    render json: {badge: badge.as_json}
+  end
+
+  # http POST "localhost:3000/badge/reject" id=1
+  def reject_badge
+    profile = current_profile!
+
+    badge = Badge.find(params[:id])
+    raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address
+
+    badge.update(status: "rejected")
     render json: {badge: badge.as_json}
   end
 

@@ -56,6 +56,12 @@ class Api::ProfileController < ApiController
     render json: current_address!
   end
 
+  def search
+    profiles = Profile.where("username LIKE ?", "%" + params[:username] + "%")
+
+    render json: {profiles: profiles}
+  end
+
   # http GET "localhost:3000/profile/list"
   def list
     if params[:username]

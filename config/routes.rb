@@ -33,6 +33,7 @@ Rails.application.routes.draw do
     post "badge/send", to: "badge#send_badge"
     post "badge/accept", to: "badge#accept_badge"
     post "badge/reject", to: "badge#reject_badge"
+    post "badge/revoke", to: "badge#revoke_badge"
 
     get "org/list", to: "org#list"
     get "org/get", to: "org#get"

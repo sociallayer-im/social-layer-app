@@ -20,7 +20,7 @@ class Api::BadgeController < ApiController
   end
 
   def search
-    badges = Badge.where("username LIKE ?", "%" + params[:username] + "%")
+    badges = Badge.where("title LIKE ?", "%" + params[:title] + "%")
 
     render json: {badges: badges}
   end
@@ -83,6 +83,17 @@ class Api::BadgeController < ApiController
     raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address
 
     badge.update(status: "rejected")
+    render json: {badge: badge.as_json}
+  end
+
+  # http POST "localhost:3000/badge/revoke" id=1
+  def revoke_badge
+    profile = current_profile!
+
+    badge = Badge.find(params[:id])
+    raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address || badge.issuer_id == profile.address
+
+    badge.update(status: "revoked")
     render json: {badge: badge.as_json}
   end
 

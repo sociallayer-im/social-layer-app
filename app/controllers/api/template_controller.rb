@@ -20,10 +20,8 @@ class Api::TemplateController < ApiController
     render json: {template: template.as_json}
   end
 
-  # http POST "localhost:3000/template/create" owner_id=0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4 name=GoodBadgeTemplate
+  # http POST "localhost:3000/template/create" owner_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodBadgeTemplate
   def create
-    # p current_profile!
-    # p current_address
     current_profile!
 
     template = BadgeTemplate.create(

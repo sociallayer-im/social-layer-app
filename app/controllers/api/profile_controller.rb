@@ -37,7 +37,6 @@ class Api::ProfileController < ApiController
       message.verify(signature, message.domain, message.issued_at, message.nonce)
 
       payload = {address: message.address}
-      $hmac_secret = Rails.application.secret_key_base
       token = JWT.encode payload, $hmac_secret, 'HS256'
       render json: {result: "ok", auth_token: token}
     rescue Siwe::ExpiredMessage

@@ -21,7 +21,10 @@ class Api::ProfileController < ApiController
         file: params[:data],
         file_name: params[:resource],
         response_fields: 'tags,customCoordinates,isPrivateFile,metadata',
-        tags: [profile.address],
+        tags: [ENV["APP_STAGE"] || "dev"],
+        custom_metadata: {
+          "address": profile.address,
+        }
     )
     render json: {result: upload[:response]}
   end
@@ -82,6 +85,8 @@ class Api::ProfileController < ApiController
       profile = Profile.where(username: params[:username]).first
     elsif params[:domain]
       profile = Profile.where(domain: params[:domain]).first
+    elsif params[:any]
+      profile = Profile.where(address: params[:any]).first || Profile.where(username: params[:any]).first || Profile.where(domain: params[:any]).first
     end
 
     render json: {profile: profile.as_json}

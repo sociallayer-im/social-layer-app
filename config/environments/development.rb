@@ -70,4 +70,5 @@ Rails.application.configure do
 
   # todo: remove
   config.hosts << "sola-api.dalispace.org"
+  config.hosts << "sola.dalispace.org"
 end

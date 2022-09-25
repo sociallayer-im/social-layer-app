@@ -21,6 +21,10 @@ class Api::BadgeControllerTest < ActionDispatch::IntegrationTest
     post api_badge_accept_url, params: {auth_token: auth_token, id: badge_id}
     assert_response :success
     p response.body
+
+    get api_badge_list_url, params: {auth_token: auth_token}
+    assert_response :success
+    p response.body
   end
 
 end

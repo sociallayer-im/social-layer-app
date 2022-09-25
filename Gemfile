@@ -35,6 +35,7 @@ gem "redis", "~> 4.0"
 gem "rack-cors"
 gem "jwt"
 gem "siwe"
+gem "kaminari"
 
 gem "imagekitio"
 gem "appsignal"

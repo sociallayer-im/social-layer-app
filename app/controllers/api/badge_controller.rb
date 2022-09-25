@@ -16,13 +16,13 @@ class Api::BadgeController < ApiController
     if params[:owner_id]
       badges = badges.where(owner_id: params[:owner_id])
     end
-    render json: {badges: badges.all.as_json}
+    render json: {badges: badges.page(params[:page]).as_json}
   end
 
   def search
     badges = Badge.where("title LIKE ?", "%" + params[:title] + "%")
 
-    render json: {badges: badges}
+    render json: {badges: badges.page(params[:page]).as_json}
   end
 
   # http GET "localhost:3000/badge/get" id==1

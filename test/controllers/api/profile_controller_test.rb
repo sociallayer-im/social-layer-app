@@ -33,6 +33,10 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     p response.body
 
+    get api_profile_list_url
+    assert_response :success
+    p response.body
+
     get api_profile_search_url, params: {username: "cod"}
     assert_response :success
     p response.body

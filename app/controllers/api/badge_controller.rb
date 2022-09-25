@@ -37,7 +37,7 @@ class Api::BadgeController < ApiController
     domain = params[:domain]
     domain = domain.split('.')[0]
 
-    unless domain.length >=4 && /[a-z0-9]+([\-\.]{1}[a-z0-9]+)*/.match(domain).to_s == domain
+    unless domain.length >=4 && /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*$/.match(domain).to_s == domain
       render json: {result: "error", message: "invalid domain"}
       return
     end

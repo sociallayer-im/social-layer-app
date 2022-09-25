@@ -106,7 +106,7 @@ class Api::ProfileController < ApiController
   def create
     current_address!
 
-    unless params[:username].length >=4 && /[a-z0-9]+([\-\.]{1}[a-z0-9]+)*/.match(params[:username]).to_s == params[:username]
+    unless params[:username].length >=4 && /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*$/.match(params[:username]).to_s == params[:username]
       render json: {result: "error", message: "invalid username"}
       return
     end

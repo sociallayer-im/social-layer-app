@@ -40,8 +40,8 @@ class Api::ProfileController < ApiController
       message.verify(signature, message.domain, message.issued_at, message.nonce)
 
       payload = {address: message.address}
-      token = JWT.encode payload, $hmac_secret, 'HS256'
-      render json: {result: "ok", auth_token: token}
+      auth_token = JWT.encode payload, $hmac_secret, 'HS256'
+      render json: {result: "ok", auth_token: auth_token}
     rescue Siwe::ExpiredMessage
         # Used when the message is already expired. (Expires At < Time.now)
         render json: {result: "error", message: "Siwe::ExpiredMessage"}
@@ -54,16 +54,36 @@ class Api::ProfileController < ApiController
     end
   end
 
+  def email_signin
+    code = rand(10000..100000)
+    token = MailToken.create(email: params[:email], code: code)
+    render json: {result: "ok", email: params[:email]}
+  end
+
+  def email_signin_verify
+    token = MailToken.find_by(email: params[:email], code: params[:code])
+    return render json: {result: "error", message: "EMailSignIn::InvalidEmailOrCode"} unless token
+    return render json: {result: "error", message: "EMailSignIn::Expired"} unless DateTime.now < (token.created_at + 30.minute)
+    return render json: {result: "error", message: "EMailSignIn::CodeIsUsed"} unless !token.verified
+    token.update(verified: true)
+
+    payload = {address: [:email], address_type: 'email'}
+    auth_token = JWT.encode payload, $hmac_secret, 'HS256'
+    render json: {result: "ok", auth_token: auth_token}
+  end
+
   def current
     render json: current_address!
   end
 
+  # todo : add :page param doc
   def search
     profiles = Profile.where("username LIKE ?", "%" + params[:username] + "%")
 
     render json: {profiles: profiles.page(params[:page]).as_json}
   end
 
+  # todo : add :page param doc
   # http GET "localhost:3000/profile/list"
   def list
     if params[:username]
@@ -106,7 +126,7 @@ class Api::ProfileController < ApiController
   def create
     current_address!
 
-    unless params[:username].length >=4 && /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*$/.match(params[:username]).to_s == params[:username]
+    unless params[:username].length >=6 && /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*$/.match(params[:username]).to_s == params[:username]
       render json: {result: "error", message: "invalid username"}
       return
     end

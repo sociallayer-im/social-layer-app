@@ -1,0 +1,2 @@
+class MailToken < ApplicationRecord
+end

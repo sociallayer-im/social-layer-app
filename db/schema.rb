@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_08_31_060610) do
+ActiveRecord::Schema[7.0].define(version: 2022_09_25_150150) do
+  create_table "badge_sets", force: :cascade do |t|
+    t.string "name"
+    t.string "domain"
+    t.string "title"
+    t.text "metadata"
+    t.text "content"
+    t.string "image_url"
+    t.integer "template_id"
+    t.integer "subject_id"
+    t.integer "org_id"
+    t.string "issuer_id"
+    t.integer "counter", default: 0
+    t.datetime "created_at", null: false
+  end
+
   create_table "badge_templates", force: :cascade do |t|
     t.string "name"
     t.string "content"
@@ -38,6 +53,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_08_31_060610) do
     t.string "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "badge_set_id"
+  end
+
+  create_table "mail_tokens", force: :cascade do |t|
+    t.string "email"
+    t.string "code"
+    t.boolean "verified", default: false
+    t.datetime "created_at", null: false
   end
 
   create_table "memberships", force: :cascade do |t|

@@ -17,6 +17,8 @@ Rails.application.routes.draw do
     get "profile/get", to: "profile#get"
     post "profile/create", to: "profile#create"
     post "profile/update", to: "profile#update"
+    post "profile/email_signin", to: "profile#email_signin"
+    post "profile/email_signin_verify", to: "profile#email_signin_verify"
 
     get "template/list", to: "template#list"
     get "template/get", to: "template#get"
@@ -30,7 +32,9 @@ Rails.application.routes.draw do
     get "badge/search", to: "badge#search"
     get "badge/get", to: "badge#get"
     post "badge/create", to: "badge#create"
+    post "badge/create_set", to: "badge#create_set"
     post "badge/send", to: "badge#send_badge"
+    post "badge/send_batch", to: "badge#send_batch"
     post "badge/accept", to: "badge#accept_badge"
     post "badge/reject", to: "badge#reject_badge"
     post "badge/revoke", to: "badge#revoke_badge"

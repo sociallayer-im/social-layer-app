@@ -1,5 +1,6 @@
 class Api::BadgeController < ApiController
 
+  # todo : add :page param doc
   # http GET "localhost:3000/badge/list"
   # http GET "localhost:3000/badge/list" status=pending
   def list
@@ -25,6 +26,7 @@ class Api::BadgeController < ApiController
     render json: {badges: badges.page(params[:page]).as_json}
   end
 
+  # todo : add :page param doc
   # http GET "localhost:3000/badge/get" id==1
   def get
     badge = Badge.find(params[:id])
@@ -41,10 +43,11 @@ class Api::BadgeController < ApiController
       render json: {result: "error", message: "invalid domain"}
       return
     end
+    domain = "#{domain}.#{profile.domain}"
 
     badge = Badge.create(
       name: params[:name],
-      domain: params[:domain], # todo: verify user have parent domain name
+      domain: domain,
       title: params[:title],
       content: params[:content],
       metadata: params[:metadata],
@@ -58,17 +61,91 @@ class Api::BadgeController < ApiController
     render json: {badge: badge.as_json}
   end
 
+  # http POST "localhost:3000/badge/create_set" issuer_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodBadge title=GoodBadge domain=goodbadge content=goodbadge image_url=http://example.com/img.jpg
+  def create_set
+    profile = current_profile!
+    domain = params[:domain]
+    domain = domain.split('.')[0]
+
+    unless domain.length >=4 && /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*$/.match(domain).to_s == domain
+      render json: {result: "error", message: "invalid domain"}
+      return
+    end
+    p params[:auth_token]
+    p "profile"
+    p profile
+    p domain
+    domain = "#{domain}.#{profile.domain}"
+
+    badge_set = BadgeSet.create(
+      name: params[:name],
+      domain: domain,
+      title: params[:title],
+      content: params[:content],
+      metadata: params[:metadata],
+      image_url: params[:image_url],
+      template_id: params[:template_id],
+      subject_id: params[:subject_id],
+      org_id: params[:org_id],
+      issuer_id: profile.address,
+      )
+    render json: {badge_set: badge_set.as_json}
+  end
+
   # http POST "localhost:3000/badge/send" id=1 receiver_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 content=some_reason
   def send_badge
     profile = current_profile!
 
     raise ActionController::ActionControllerError.new("invalid receiver id") unless check_address(params[:receiver_id])
 
-    badge = Badge.find(params[:id])
-    raise ActionController::ActionControllerError.new("access denied") unless badge.issuer_id == profile.address
+    badge_set = BadgeSet.find(params[:badge_set_id])
+    raise ActionController::ActionControllerError.new("access denied") unless badge_set.issuer_id == profile.address
 
-    badge.update(status: "pending", content: params[:content], receiver_id: params[:receiver_id], owner_id: params[:receiver_id])
+    badge = Badge.create(
+      name: badge_set.name,
+      domain: "#{badge_set.domain}##{badge_set.counter}",
+      title: badge_set.title,
+      content: params[:content] || badge_set.content,
+      metadata: badge_set.metadata,
+      image_url: badge_set.image_url,
+      template_id: badge_set.template_id,
+      subject_id: badge_set.subject_id,
+      org_id: badge_set.org_id,
+      issuer_id: profile.address,
+      badge_set_id: badge_set.id,
+      status: "pending", content: params[:content], receiver_id: params[:receiver_id], owner_id: params[:receiver_id])
+
+    badge_set.increment!(:counter)
     render json: {badge: badge.as_json}
+  end
+
+  def send_batch
+    profile = current_profile!
+
+    params[:receivers].each {|receiver| raise ActionController::ActionControllerError.new("invalid receiver id") unless check_address(receiver) }
+
+    badge_set = BadgeSet.find(params[:badge_set_id])
+    raise ActionController::ActionControllerError.new("access denied") unless badge_set.issuer_id == profile.address
+
+    badges = params[:receivers].map {|receiver|
+      badge = Badge.create(
+        name: badge_set.name,
+        domain: "#{badge_set.domain}##{badge_set.counter}",
+        title: badge_set.title,
+        content: params[:content] || badge_set.content,
+        metadata: badge_set.metadata,
+        image_url: badge_set.image_url,
+        template_id: badge_set.template_id,
+        subject_id: badge_set.subject_id,
+        org_id: badge_set.org_id,
+        issuer_id: profile.address,
+        badge_set_id: badge_set.id,
+        status: "pending", content: params[:content], receiver_id: receiver, owner_id: receiver)
+
+      badge_set.increment!(:counter)
+    }
+
+    render json: {badges: badges.as_json}
   end
 
   # http POST "localhost:3000/badge/accept" id=1
@@ -77,6 +154,7 @@ class Api::BadgeController < ApiController
 
     badge = Badge.find(params[:id])
     raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address
+    raise ActionController::ActionControllerError.new("invalid state") unless badge.status == "pending"
 
     badge.update(status: "accepted")
     render json: {badge: badge.as_json}
@@ -88,6 +166,7 @@ class Api::BadgeController < ApiController
 
     badge = Badge.find(params[:id])
     raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address
+    raise ActionController::ActionControllerError.new("invalid state") unless badge.status == "pending"
 
     badge.update(status: "rejected")
     render json: {badge: badge.as_json}
@@ -99,6 +178,7 @@ class Api::BadgeController < ApiController
 
     badge = Badge.find(params[:id])
     raise ActionController::ActionControllerError.new("access denied") unless badge.owner_id == profile.address || badge.issuer_id == profile.address
+    raise ActionController::ActionControllerError.new("invalid state") unless badge.status == "pending" || badge.status == "accepted"
 
     badge.update(status: "revoked")
     render json: {badge: badge.as_json}

@@ -54,12 +54,15 @@ class Api::ProfileController < ApiController
     end
   end
 
+  # http POST "localhost:3000/profile/email_signin" email=hello@mail.com
   def email_signin
     code = rand(10000..100000)
     token = MailToken.create(email: params[:email], code: code)
+    p token
     render json: {result: "ok", email: params[:email]}
   end
 
+  # http POST "localhost:3000/profile/email_signin_verify" email=hello@mail.com code=18515
   def email_signin_verify
     token = MailToken.find_by(email: params[:email], code: params[:code])
     return render json: {result: "error", message: "EMailSignIn::InvalidEmailOrCode"} unless token
@@ -69,7 +72,7 @@ class Api::ProfileController < ApiController
 
     payload = {address: [:email], address_type: 'email'}
     auth_token = JWT.encode payload, $hmac_secret, 'HS256'
-    render json: {result: "ok", auth_token: auth_token}
+    render json: {result: "ok", auth_token: auth_token, email: params[:email]}
   end
 
   def current

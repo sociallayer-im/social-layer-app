@@ -1,3 +1,4 @@
+require 'net/smtp'
 require 'jwt'
 
 $hmac_secret = Rails.application.secret_key_base
@@ -59,6 +60,20 @@ class Api::ProfileController < ApiController
     code = rand(10000..100000)
     token = MailToken.create(email: params[:email], code: code)
     p token
+
+
+message = <<MESSAGE_END
+From: Social Layer Service <#{ENV['SMTP_MAIL_SENDER']}>
+To: Social Layer User <#{params[:email]}>
+Subject: Social Layer SignIn
+This is an e-mail message.
+Sign In Code: #{code}
+MESSAGE_END
+
+    Net::SMTP.start(ENV['SMTP_HOST'],587,ENV['SMTP_MAIL_SENDER'],ENV['SMTP_USER'],ENV['SMTP_PASSWORD']) do |smtp|
+      smtp.send_message message, ENV['SMTP_MAIL_SENDER'], params[:email]
+    end
+
     render json: {result: "ok", email: params[:email]}
   end
 

@@ -31,6 +31,8 @@ Rails.application.routes.draw do
     get "badge/list", to: "badge#list"
     get "badge/search", to: "badge#search"
     get "badge/get", to: "badge#get"
+    get "badge/get_badge_set", to: "badge#get_badge_set"
+
     post "badge/create", to: "badge#create"
     post "badge/create_set", to: "badge#create_set"
     post "badge/send", to: "badge#send_badge"

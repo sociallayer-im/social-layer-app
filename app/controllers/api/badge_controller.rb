@@ -33,6 +33,12 @@ class Api::BadgeController < ApiController
     render json: {badge: badge.as_json}
   end
 
+  # http GET "localhost:3000/badge/get_badge_set" id==1
+  def get_badge_set
+    badge_set = BadgeSet.find(params[:id])
+    render json: {badge_set: badge_set.as_json}
+  end
+
   # http POST "localhost:3000/badge/create" issuer_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodBadge title=GoodBadge domain=goodbadge content=goodbadge image_url=http://example.com/img.jpg
   def create
     profile = current_profile!

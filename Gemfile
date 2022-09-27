@@ -39,6 +39,8 @@ gem "kaminari"
 
 gem "imagekitio"
 gem "appsignal"
+gem "ed25519", "1.3.0"
+gem "bcrypt_pbkdf", "1.1.0"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -79,6 +81,12 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
   gem "webdrivers"
+end
+
+group :development do
+  gem "capistrano", "~> 3.10", require: false
+  gem "capistrano-rails", "~> 1.3", require: false
+  gem "capistrano-rbenv", "~> 2.2", require: false
 end
 
 gem "sidekiq", "~> 6.5"

@@ -61,7 +61,7 @@ class Api::BadgeController < ApiController
     render json: {badge: badge.as_json}
   end
 
-  # http POST "localhost:3000/badge/create_set" issuer_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodBadge title=GoodBadge domain=goodbadge content=goodbadge image_url=http://example.com/img.jpg
+  # http POST "localhost:3000/badge/create_set" issuer_id=0x7682Ba569E3823Ca1B7317017F5769F8Aa8842D4 name=GoodBadge title=GoodBadge domain=goodbadge content=goodbadge image_url=http://example.com/img.jpg auth_token==$AUTH_TOKEN
   def create_set
     profile = current_profile!
     domain = params[:domain]
@@ -71,10 +71,6 @@ class Api::BadgeController < ApiController
       render json: {result: "error", message: "invalid domain"}
       return
     end
-    p params[:auth_token]
-    p "profile"
-    p profile
-    p domain
     domain = "#{domain}.#{profile.domain}"
 
     badge_set = BadgeSet.create(
@@ -92,7 +88,7 @@ class Api::BadgeController < ApiController
     render json: {badge_set: badge_set.as_json}
   end
 
-  # http POST "localhost:3000/badge/send" id=1 receiver_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 content=some_reason
+  # http POST "localhost:3000/badge/send" badge_set_id=1 receiver_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 content='GoodBadge' auth_token==$AUTH_TOKEN
   def send_badge
     profile = current_profile!
 
@@ -119,6 +115,7 @@ class Api::BadgeController < ApiController
     render json: {badge: badge.as_json}
   end
 
+  # http POST "localhost:3000/badge/send_batch" badge_set_id=1 receivers[]=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 content='GoodBadge' auth_token==$AUTH_TOKEN
   def send_batch
     profile = current_profile!
 
@@ -127,10 +124,11 @@ class Api::BadgeController < ApiController
     badge_set = BadgeSet.find(params[:badge_set_id])
     raise ActionController::ActionControllerError.new("access denied") unless badge_set.issuer_id == profile.address
 
+    # todo : badge_set.counter should start at 1
     badges = params[:receivers].map {|receiver|
       badge = Badge.create(
         name: badge_set.name,
-        domain: "#{badge_set.domain}##{badge_set.counter}",
+        domain: "#{badge_set.domain}##{badge_set.counter+1}",
         title: badge_set.title,
         content: params[:content] || badge_set.content,
         metadata: badge_set.metadata,
@@ -143,6 +141,8 @@ class Api::BadgeController < ApiController
         status: "pending", content: params[:content], receiver_id: receiver, owner_id: receiver)
 
       badge_set.increment!(:counter)
+
+      badge
     }
 
     render json: {badges: badges.as_json}

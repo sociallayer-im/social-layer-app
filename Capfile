@@ -31,7 +31,7 @@ set :rbenv_ruby, '3.1.2'
 #   https://github.com/capistrano/passenger
 #
 # require "capistrano/rvm"
-# require "capistrano/rbenv"
+require "capistrano/rbenv"
 # require "capistrano/chruby"
 # require "capistrano/bundler"
 # require "capistrano/rails/assets"

@@ -111,8 +111,10 @@ class Api::ProfileController < ApiController
       profile = Profile.where(username: params[:username]).first
     elsif params[:domain]
       profile = Profile.where(domain: params[:domain]).first
+    elsif params[:email]
+      profile = Profile.where(email: params[:email]).first
     elsif params[:any]
-      profile = Profile.where(address: params[:any]).first || Profile.where(username: params[:any]).first || Profile.where(domain: params[:any]).first
+      profile = Profile.where(address: params[:any]).first || Profile.where(username: params[:any]).first  || Profile.where(email: params[:any]).first || Profile.where(domain: params[:any]).first
     end
 
     render json: {profile: profile.as_json}
@@ -138,7 +140,7 @@ class Api::ProfileController < ApiController
     end
 
     domain = "#{params[:username]}.sociallayer.im"
-    Profile.create(address: current_address, username: params[:username], domain: domain)
+    Profile.create(address: current_address, email: params[:email], username: params[:username], domain: domain)
     render json: {result: "ok"}
   end
 end

@@ -19,6 +19,7 @@ Rails.application.routes.draw do
     post "profile/update", to: "profile#update"
     post "profile/email_signin", to: "profile#email_signin"
     post "profile/email_signin_verify", to: "profile#email_signin_verify"
+    post "profile/set_verified_email", to: "profile#set_verified_email"
 
     get "template/list", to: "template#list"
     get "template/get", to: "template#get"

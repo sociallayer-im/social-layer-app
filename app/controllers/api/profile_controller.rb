@@ -39,7 +39,7 @@ class Api::ProfileController < ApiController
       message = Siwe::Message.from_message params[:message]
       message.verify(signature, message.domain, message.issued_at, message.nonce)
 
-      payload = {address: message.address}
+      payload = {address: message.address, address_type: 'wallet'}
       auth_token = JWT.encode payload, $hmac_secret, 'HS256'
       render json: {result: "ok", auth_token: auth_token}
     rescue Siwe::ExpiredMessage
@@ -78,6 +78,18 @@ class Api::ProfileController < ApiController
     render json: {result: "ok", auth_token: auth_token, email: params[:email]}
   end
 
+  def set_verified_email
+    address = current_address!
+    token = params[:email_auth_token]
+    decoded_token = JWT.decode token, $hmac_secret, true, { algorithm: 'HS256' }
+    email = decoded_token[0]["address"]
+
+    profile = Profile.where(address: address).first
+    profile.update(email: email)
+
+    render json: {result: "ok", email: email, address: address}
+  end
+
   def current
     render json: current_address!
   end
@@ -103,6 +115,7 @@ class Api::ProfileController < ApiController
 
   # http GET "localhost:3000/profile/get" address==0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
   # http GET "localhost:3000/profile/get" username==coder
+  # http GET "localhost:3000/profile/get" email==coder@email.com
   # http GET "localhost:3000/profile/get" domain==coder.sociallayer.im
   def get
     if params[:address]

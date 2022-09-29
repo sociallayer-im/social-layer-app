@@ -23,7 +23,7 @@ class Api::ProfileController < ApiController
         response_fields: 'tags,customCoordinates,isPrivateFile,metadata',
         tags: [ENV["APP_STAGE"] || "dev"],
         custom_metadata: {
-          "address": profile.address,
+          "address": (profile && profile.address),
         }
     )
     render json: {result: upload[:response]}

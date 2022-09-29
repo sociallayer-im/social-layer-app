@@ -33,7 +33,7 @@ class ApiController < ApplicationController
 
     address = current_address
     raise ActionController::ActionControllerError.new("current_address is empty") unless address
-    @profile = Profile.find_by(address: address)
+    @profile = Profile.find_by(address: address) || Profile.find_by(email: address)
     raise ActionController::ActionControllerError.new("profile not found") unless address
     @profile
   end

@@ -23,7 +23,7 @@ class Api::ProfileController < ApiController
         response_fields: 'tags,customCoordinates,isPrivateFile,metadata',
         tags: [ENV["APP_STAGE"] || "dev"],
         custom_metadata: {
-          "address": (profile && profile.address),
+          "address": (profile && profile.address), # TODO : add email metadata again
         }
     )
     render json: {result: upload[:response]}
@@ -73,7 +73,7 @@ class Api::ProfileController < ApiController
     return render json: {result: "error", message: "EMailSignIn::CodeIsUsed"} unless !token.verified
     token.update(verified: true)
 
-    payload = {address: [:email], address_type: 'email'}
+    payload = {address: params[:email], address_type: 'email'}
     auth_token = JWT.encode payload, $hmac_secret, 'HS256'
     render json: {result: "ok", auth_token: auth_token, email: params[:email]}
   end

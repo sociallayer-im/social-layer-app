@@ -6,7 +6,7 @@ class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def check_address(addr)
-    (addr =~ /^0x[a-fA-F0-9]{40}$/) == 0
+    (addr =~ /^0x[a-fA-F0-9]{40}$/) == 0 || (addr =~ URI::MailTo::EMAIL_REGEXP) == 0
   end
 
   def current_address

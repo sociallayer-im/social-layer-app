@@ -125,6 +125,7 @@ class Api::BadgeController < ApiController
   def send_batch
     profile = current_profile!
 
+    # todo : add check again with email input
     params[:receivers].each {|receiver| raise ActionController::ActionControllerError.new("invalid receiver id") unless check_address(receiver) }
 
     badge_set = BadgeSet.find(params[:badge_set_id])

@@ -96,7 +96,8 @@ class Api::ProfileController < ApiController
 
   # todo : add :page param doc
   def search
-    profiles = Profile.where("username LIKE ?", "%" + params[:username] + "%")
+    profiles = Profile
+    profiles = profiles.where("username LIKE ?", "%" + params[:username] + "%").or(profiles.where("email LIKE ?", "%" + params[:username] + "%"))
 
     render json: {profiles: profiles.page(params[:page]).as_json}
   end

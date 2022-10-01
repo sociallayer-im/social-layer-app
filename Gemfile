@@ -42,6 +42,8 @@ gem "appsignal"
 gem "ed25519", "1.3.0"
 gem "bcrypt_pbkdf", "1.1.0"
 
+gem "rails_admin", "~> 3.0"
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 
@@ -90,3 +92,4 @@ group :development do
 end
 
 gem "sidekiq", "~> 6.5"
+gem "sassc-rails"

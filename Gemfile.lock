@@ -51,6 +51,10 @@ GEM
       globalid (>= 0.3.6)
     activemodel (7.0.3.1)
       activesupport (= 7.0.3.1)
+    activemodel-serializers-xml (1.0.2)
+      activemodel (> 5.x)
+      activesupport (> 5.x)
+      builder (~> 3.1)
     activerecord (7.0.3.1)
       activemodel (= 7.0.3.1)
       activesupport (= 7.0.3.1)
@@ -193,6 +197,7 @@ GEM
     minitest (5.16.2)
     msgpack (1.5.3)
     multipart-post (2.2.3)
+    nested_form (0.3.2)
     net-imap (0.2.3)
       digest
       net-protocol
@@ -246,6 +251,12 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.4.3)
       loofah (~> 2.3)
+    rails_admin (3.0.0)
+      activemodel-serializers-xml (>= 1.0)
+      kaminari (>= 0.14, < 2.0)
+      nested_form (~> 0.3)
+      rails (>= 6.0, < 8)
+      turbo-rails (~> 1.0)
     railties (7.0.3.1)
       actionpack (= 7.0.3.1)
       activesupport (= 7.0.3.1)
@@ -271,6 +282,14 @@ GEM
     ruby-vips (2.1.4)
       ffi (~> 1.12)
     rubyzip (2.3.2)
+    sassc (2.4.0)
+      ffi (~> 1.9)
+    sassc-rails (2.1.2)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     scrypt (3.0.7)
       ffi-compiler (>= 1.0, < 2.0)
     selenium-webdriver (4.3.0)
@@ -300,6 +319,7 @@ GEM
       railties (>= 6.0.0)
     strscan (3.0.3)
     thor (1.2.1)
+    tilt (2.0.10)
     timeout (0.3.0)
     turbo-rails (1.1.1)
       actionpack (>= 6.0.0)
@@ -350,7 +370,9 @@ DEPENDENCIES
   puma (~> 5.0)
   rack-cors
   rails (~> 7.0.3, >= 7.0.3.1)
+  rails_admin (~> 3.0)
   redis (~> 4.0)
+  sassc-rails
   selenium-webdriver
   sidekiq (~> 6.5)
   siwe

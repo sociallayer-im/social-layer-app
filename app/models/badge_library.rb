@@ -1,0 +1,2 @@
+class BadgeLibrary < ApplicationRecord
+end

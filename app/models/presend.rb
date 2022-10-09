@@ -1,0 +1,2 @@
+class Presend < ApplicationRecord
+end

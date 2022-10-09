@@ -1,0 +1,2 @@
+class Badgelet < ApplicationRecord
+end

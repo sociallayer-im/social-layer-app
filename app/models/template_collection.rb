@@ -1,0 +1,2 @@
+class TemplateCollection < ApplicationRecord
+end

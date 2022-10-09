@@ -1,0 +1,2 @@
+class TemplateLibrary < ApplicationRecord
+end

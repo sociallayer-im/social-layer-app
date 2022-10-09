@@ -10,7 +10,27 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_09_28_063131) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_09_073934) do
+  create_table "badge_collections", force: :cascade do |t|
+    t.string "title"
+    t.string "content"
+    t.string "metadata"
+    t.integer "owner_id"
+    t.integer "badge_library_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "badge_libraries", force: :cascade do |t|
+    t.string "title"
+    t.integer "owner_id"
+    t.string "image_url"
+    t.string "content"
+    t.string "metadata"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "badge_sets", force: :cascade do |t|
     t.string "name"
     t.string "domain"
@@ -35,6 +55,17 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_063131) do
     t.datetime "created_at"
   end
 
+  create_table "badgelets", force: :cascade do |t|
+    t.integer "index"
+    t.integer "badge_id"
+    t.integer "receiver_id"
+    t.integer "owner_id"
+    t.string "status", default: "new"
+    t.text "metadata"
+    t.string "subject_url"
+    t.datetime "created_at"
+  end
+
   create_table "badges", force: :cascade do |t|
     t.string "name"
     t.string "domain"
@@ -42,18 +73,31 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_063131) do
     t.text "metadata"
     t.text "content"
     t.string "image_url"
-    t.string "signature"
-    t.string "status", default: "new"
     t.string "token_id"
     t.integer "template_id"
     t.integer "subject_id"
     t.integer "org_id"
-    t.string "issuer_id"
-    t.string "receiver_id"
-    t.string "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "badge_set_id"
+    t.integer "sender_id"
+    t.integer "counter"
+    t.string "resource_type"
+    t.string "resource_url"
+    t.string "subject_url"
+    t.string "badge_class"
+    t.string "hashtags"
+    t.integer "badge_library_id"
+    t.integer "badge_collection_id"
+    t.integer "value"
+    t.datetime "last_consumed_at"
+    t.string "unlocking"
+  end
+
+  create_table "contacts", force: :cascade do |t|
+    t.integer "source_id"
+    t.integer "target_id"
+    t.string "role"
+    t.datetime "created_at", null: false
   end
 
   create_table "mail_tokens", force: :cascade do |t|
@@ -67,16 +111,31 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_063131) do
     t.integer "profile_id"
     t.integer "org_id"
     t.datetime "created_at"
+    t.string "role"
   end
 
   create_table "orgs", force: :cascade do |t|
     t.string "name"
-    t.string "owner_id"
     t.string "image_url"
     t.text "content"
     t.text "metadata"
     t.datetime "created_at"
+    t.string "title"
+    t.string "domain"
+    t.integer "owner_id"
     t.index ["name"], name: "index_orgs_on_name", unique: true
+  end
+
+  create_table "presends", force: :cascade do |t|
+    t.integer "sender_id"
+    t.integer "badge_id"
+    t.integer "badgelet_id"
+    t.string "code"
+    t.string "message"
+    t.datetime "expires_at"
+    t.boolean "accepted", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "profiles", force: :cascade do |t|
@@ -87,6 +146,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_063131) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "email"
+    t.string "address_type", default: "wallet"
+    t.string "twitter"
+    t.datetime "last_signin_at"
+    t.string "permissions"
     t.index ["address"], name: "index_profiles_on_address", unique: true
     t.index ["domain"], name: "index_profiles_on_domain", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true
@@ -97,8 +160,52 @@ ActiveRecord::Schema[7.0].define(version: 2022_09_28_063131) do
     t.string "token_id"
     t.text "content"
     t.text "metadata"
-    t.string "owner_id"
     t.datetime "created_at"
+    t.integer "owner_id"
+    t.string "domain"
+    t.string "title"
+    t.string "subject_class"
+    t.string "subject_url"
+    t.string "hashtags"
+  end
+
+  create_table "template_collections", force: :cascade do |t|
+    t.string "title"
+    t.text "metadata"
+    t.text "content"
+    t.string "image_url"
+    t.integer "template_library_id"
+    t.integer "owner_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "template_libraries", force: :cascade do |t|
+    t.string "title"
+    t.text "metadata"
+    t.text "content"
+    t.string "image_url"
+    t.integer "owner_id"
+    t.string "license"
+    t.integer "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "templates", force: :cascade do |t|
+    t.string "title"
+    t.text "metadata"
+    t.text "content"
+    t.string "image_url"
+    t.string "resource_type"
+    t.string "resource_url"
+    t.integer "template_collection_id"
+    t.integer "template_library_id"
+    t.integer "owner_id"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
 end

@@ -2,18 +2,18 @@ class Api::TemplateController < ApiController
 
   # http GET "localhost:3000/template/list"
   def list
-    templates = BadgeTemplate.all
+    templates = Template.all
     render json: {templates: templates.as_json}
   end
 
   # http GET "localhost:3000/template/get" id==1
   def get
-    template = BadgeTemplate.find(params[:id])
+    template = Template.find(params[:id])
     render json: {template: template.as_json}
   end
 
   def update
-    template = BadgeTemplate.find(params[:id])
+    template = Template.find(params[:id])
     raise ActionController::ActionControllerError.new("access denied") unless template.owner_id == current_address
 
     template.update(image_url: params[:image_url],content: params[:content],metadata: params[:metadata],)
@@ -24,7 +24,7 @@ class Api::TemplateController < ApiController
   def create
     current_profile!
 
-    template = BadgeTemplate.create(
+    template = Template.create(
       name: params[:name],
       content: params[:content],
       image_url: params[:image_url],

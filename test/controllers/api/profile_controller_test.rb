@@ -8,32 +8,37 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "api#profile/current" do
-    auth_token = gen_auth_code($account_addr)
+    prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
+    auth_token = gen_auth_token(prof.id)
     get api_siwe_current_url, params: {auth_token: auth_token}
     assert_response :success
-    # p response.body
   end
 
   test "api#profile/create" do
-    auth_token = gen_auth_code($account_addr)
+    prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
+    auth_token = gen_auth_token(prof.id)
     post api_profile_create_url, params: {auth_token: auth_token, username: "coderr"}
     assert_response :success
-    # p response.body
   end
 
-  test "api#profile/email_signin" do
-    post api_profile_email_signin_url, params: {email: "hello@email.com"}
+  test "api#profile/signin_with_email" do
+    post api_profile_send_email_url, params: {email: "hello@email.com"}
     assert_response :success
     p response.body
 
-    post api_profile_email_signin_verify_url, params: {email: "hello@email.com", code: MailToken.last.code}
+    post api_profile_signin_with_email_url, params: {email: "hello@email.com", code: MailToken.last.code}
     assert_response :success
     p response.body
+    auth_token = JSON.parse(response.body)["auth_token"]
   end
 
   test "api#profile/get" do
-    auth_token = gen_auth_code($account_addr)
+    prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
+    auth_token = gen_auth_token(prof.id)
+
     post api_profile_create_url, params: {auth_token: auth_token, username: "coderr"}
+    assert_response :success
+    p response.body
 
     get api_profile_get_url, params: {address: $account_addr}
     assert_response :success

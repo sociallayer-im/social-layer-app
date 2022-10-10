@@ -13,6 +13,12 @@ def gen_auth_code(addr)
   JWT.encode payload, $hmac_secret, 'HS256'
 end
 
+def gen_auth_token(id)
+  payload = {id: id}
+  $hmac_secret = Rails.application.secret_key_base
+  JWT.encode payload, $hmac_secret, 'HS256'
+end
+
 class ActiveSupport::TestCase
   # Run tests in parallel with specified workers
   parallelize(workers: :number_of_processors)

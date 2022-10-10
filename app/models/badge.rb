@@ -1,5 +1,7 @@
 class Badge < ApplicationRecord
 
+  has_many :badgelets
+
   rails_admin do 
     list do
       configure :image_url do

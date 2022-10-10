@@ -8,6 +8,10 @@ class Api::ProfileController < ApiController
     render json: "ok"
   end
 
+  def current
+    render json: current_address!
+  end
+
   def signin
     render layout: false
   end
@@ -39,9 +43,11 @@ class Api::ProfileController < ApiController
       message = Siwe::Message.from_message params[:message]
       message.verify(signature, message.domain, message.issued_at, message.nonce)
 
-      payload = {address: message.address, address_type: 'wallet'}
+      profile = Profile.find_or_create_by(address: message.address)
+
+      payload = {id: profile.id, address_type: 'wallet'}
       auth_token = JWT.encode payload, $hmac_secret, 'HS256'
-      render json: {result: "ok", auth_token: auth_token}
+      render json: {result: "ok", auth_token: auth_token, address: message.address, id: profile.id}
     rescue Siwe::ExpiredMessage
         # Used when the message is already expired. (Expires At < Time.now)
         render json: {result: "error", message: "Siwe::ExpiredMessage"}
@@ -55,43 +61,62 @@ class Api::ProfileController < ApiController
   end
 
   # http POST "localhost:3000/profile/email_signin" email=hello@mail.com
-  def email_signin
+  def send_email
     code = rand(10000..100000)
     token = MailToken.create(email: params[:email], code: code)
     p token
 
-    MailerJob.perform_async(params[:email], code)
+    unless ENV["DO_NOT_SEND_EMAIL"]
+      MailerJob.perform_async(params[:email], code)
+    end
 
     render json: {result: "ok", email: params[:email]}
   end
 
   # http POST "localhost:3000/profile/email_signin_verify" email=hello@mail.com code=18515
-  def email_signin_verify
+  def signin_with_email
     token = MailToken.find_by(email: params[:email], code: params[:code])
     return render json: {result: "error", message: "EMailSignIn::InvalidEmailOrCode"} unless token
     return render json: {result: "error", message: "EMailSignIn::Expired"} unless DateTime.now < (token.created_at + 30.minute)
     return render json: {result: "error", message: "EMailSignIn::CodeIsUsed"} unless !token.verified
     token.update(verified: true)
 
-    payload = {address: params[:email], address_type: 'email'}
+    profile = Profile.find_or_create_by(email: params[:email])
+    payload = {id: profile.id, address_type: 'email'}
     auth_token = JWT.encode payload, $hmac_secret, 'HS256'
-    render json: {result: "ok", auth_token: auth_token, email: params[:email]}
+    render json: {result: "ok", auth_token: auth_token, email: params[:email], id: profile.id}
   end
 
-  def set_verified_email
-    address = current_address!
-    token = params[:email_auth_token]
-    decoded_token = JWT.decode token, $hmac_secret, true, { algorithm: 'HS256' }
-    email = decoded_token[0]["address"]
+  def set_verified_address
+    profile = current_profile!
 
-    profile = Profile.where(address: address).first
-    profile.update(email: email)
+    begin
+      signature = params[:signature]
+      message = Siwe::Message.from_message params[:message]
+      message.verify(signature, message.domain, message.issued_at, message.nonce)
 
-    render json: {result: "ok", email: email, address: address}
-  end
+      # profile = Profile.find_or_create_by(address: message.address)
+      address = message.address
 
-  def current
-    render json: current_address!
+      addr_profile = Profile.where(address: address).first
+      if addr_profile && addr_profile.username
+          return render json: {result: "error", message: "profile domain name already exists"}
+      end
+
+      profile.update(address: address)
+      # todo : migrate address badges
+
+      render json: {result: "ok", email: profile.email, address: message.address, id: profile.id}
+    rescue Siwe::ExpiredMessage
+        # Used when the message is already expired. (Expires At < Time.now)
+        render json: {result: "error", message: "Siwe::ExpiredMessage"}
+    rescue Siwe::NotValidMessage
+        # Used when the message is not yet valid. (Not Before > Time.now)
+        render json: {result: "error", message: "Siwe::NotValidMessage"}
+    rescue Siwe::InvalidSignature
+        # Used when the signature doesn't correspond to the address of the message.
+        render json: {result: "error", message: "Siwe::InvalidSignature"}
+    end
   end
 
   # todo : add :page param doc
@@ -121,6 +146,8 @@ class Api::ProfileController < ApiController
   def get
     if params[:address]
       profile = Profile.where(address: params[:address]).first
+    elsif params[:id]
+      profile = Profile.find(params[:id])
     elsif params[:username]
       profile = Profile.where(username: params[:username]).first
     elsif params[:domain]
@@ -154,7 +181,18 @@ class Api::ProfileController < ApiController
     end
 
     domain = "#{params[:username]}.sociallayer.im"
-    Profile.create(address: current_address, email: params[:email], username: params[:username], domain: domain)
-    render json: {result: "ok"}
+    profile = Profile.find_by(address: current_address)
+
+    if profile
+      if profile.domain
+        render json: {result: "error", message: "profile domain exists"}
+      else
+        profile.update(username: params[:username], domain: domain)
+        render json: {result: "ok"}
+      end
+    else
+      Profile.create(address: current_address, username: params[:username], domain: domain)
+      render json: {result: "ok"}
+    end
   end
 end

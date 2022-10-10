@@ -15,7 +15,8 @@ class ApiController < ApplicationController
     begin
       token = params[:auth_token]
       decoded_token = JWT.decode token, $hmac_secret, true, { algorithm: 'HS256' }
-      @address = decoded_token[0]["address"]
+      profile_id = decoded_token[0]["id"]
+      @address = Profile.find(profile_id).address
       @address
     rescue
       nil
@@ -29,12 +30,13 @@ class ApiController < ApplicationController
   end
 
   def current_profile!
-    return @profile if @profile
+    return @address if @address
 
-    address = current_address
-    raise ActionController::ActionControllerError.new("current_address is empty") unless address
-    @profile = Profile.find_by(address: address) || Profile.find_by(email: address)
-    raise ActionController::ActionControllerError.new("profile not found") unless address
+    token = params[:auth_token]
+    decoded_token = JWT.decode token, $hmac_secret, true, { algorithm: 'HS256' }
+    profile_id = decoded_token[0]["id"]
+    @profile = Profile.find_by(id: profile_id)
+    raise ActionController::ActionControllerError.new("profile not found") unless @profile
     @profile
   end
 

@@ -18,9 +18,9 @@ Rails.application.routes.draw do
     get "profile/get", to: "profile#get"
     post "profile/create", to: "profile#create"
     post "profile/update", to: "profile#update"
-    post "profile/email_signin", to: "profile#email_signin"
-    post "profile/email_signin_verify", to: "profile#email_signin_verify"
-    post "profile/set_verified_email", to: "profile#set_verified_email"
+    post "profile/send_email", to: "profile#send_email"
+    post "profile/signin_with_email", to: "profile#signin_with_email"
+    post "profile/set_verified_address", to: "profile#set_verified_address"
 
     get "template/list", to: "template#list"
     get "template/get", to: "template#get"
@@ -33,15 +33,16 @@ Rails.application.routes.draw do
     get "badge/list", to: "badge#list"
     get "badge/search", to: "badge#search"
     get "badge/get", to: "badge#get"
-    get "badge/get_badge_set", to: "badge#get_badge_set"
 
     post "badge/create", to: "badge#create"
-    post "badge/create_set", to: "badge#create_set"
     post "badge/send", to: "badge#send_badge"
-    post "badge/send_batch", to: "badge#send_batch"
     post "badge/accept", to: "badge#accept_badge"
     post "badge/reject", to: "badge#reject_badge"
     post "badge/revoke", to: "badge#revoke_badge"
+
+    get "badgelet/list", to: "badgelet#list"
+    get "badgelet/search", to: "badgelet#search"
+    get "badgelet/get", to: "badgelet#get"
 
     get "org/list", to: "org#list"
     get "org/get", to: "org#get"

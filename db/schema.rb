@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_09_073934) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_10_045807) do
   create_table "badge_collections", force: :cascade do |t|
     t.string "title"
     t.string "content"
@@ -64,6 +64,10 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_09_073934) do
     t.text "metadata"
     t.string "subject_url"
     t.datetime "created_at"
+    t.integer "sender_id"
+    t.string "token_id"
+    t.string "domain"
+    t.text "content"
   end
 
   create_table "badges", force: :cascade do |t|
@@ -80,7 +84,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_09_073934) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "sender_id"
-    t.integer "counter"
     t.string "resource_type"
     t.string "resource_url"
     t.string "subject_url"
@@ -91,6 +94,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_09_073934) do
     t.integer "value"
     t.datetime "last_consumed_at"
     t.string "unlocking"
+    t.integer "counter", default: 1
   end
 
   create_table "contacts", force: :cascade do |t|

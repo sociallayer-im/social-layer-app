@@ -3,34 +3,53 @@ require "test_helper"
 class Api::BadgeControllerTest < ActionDispatch::IntegrationTest
 
   test "api#badge/create" do
-    auth_token = gen_auth_code($account_addr)
-    post api_profile_create_url, params: {auth_token: auth_token, username: "coderr"}
+    prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
+    auth_token = gen_auth_token(prof.id)
+
+
+    post api_badge_create_url, params: {auth_token: auth_token, sender_id: $account_addr, name: "GoodBadge", title: "GoodBadge",  domain: "goodbadge", image_url: "http://example.com/img.jpg"}
     assert_response :success
     p response.body
 
-    post api_badge_create_set_url, params: {auth_token: auth_token, issuer_id: $account_addr, name: "GoodBadge", title: "GoodBadge",  domain: "goodbadge", image_url: "http://example.com/img.jpg"}
-    assert_response :success
-    p response.body
-
-    badge_set_id = JSON.parse(response.body)["badge_set"]["id"]
-
-    post api_badge_send_url, params: {auth_token: auth_token, badge_set_id: badge_set_id, receiver_id: $account_addr, content: "good badge"}
-    assert_response :success
-    p response.body
     badge_id = JSON.parse(response.body)["badge"]["id"]
 
-    post api_badge_accept_url, params: {auth_token: auth_token, id: badge_id}
+
+    post api_badge_send_url, params: {auth_token: auth_token, badge_id: badge_id, receivers: [$account_addr], content: "good badge"}
+    assert_response :success
+    p response.body
+    badgelet_id = JSON.parse(response.body)["badgelets"].first["id"]
+
+    post api_badge_accept_url, params: {auth_token: auth_token, badgelet_id: badgelet_id}
     assert_response :success
     p response.body
 
     get api_badge_list_url, params: {auth_token: auth_token}
     assert_response :success
-    p response.body
+    JSON.parse(response.body)["badges"].each {|badge|
+      p badge
+    }
 
-
-    post api_badge_send_batch_url, params: {auth_token: auth_token, badge_set_id: badge_set_id, receivers: [$account_addr], content: "good badge"}
+    get api_badge_search_url, params: {auth_token: auth_token, title: "Good"}
     assert_response :success
-    p response.body
+    JSON.parse(response.body)["badges"].each {|badge|
+      p badge
+    }
+
+    get api_badgelet_list_url, params: {auth_token: auth_token}
+    assert_response :success
+    JSON.parse(response.body)["badgelets"].each {|badgelet|
+      p badgelet
+    }
+
+    get api_badgelet_search_url, params: {auth_token: auth_token, title: "Good"}
+    assert_response :success
+    JSON.parse(response.body)["badgelets"].each {|badgelet|
+      p badgelet
+    }
+
+    get api_badgelet_get_url, params: {auth_token: auth_token, id: Badgelet.last.id}
+    assert_response :success
+    p JSON.parse(response.body)["badgelet"]
   end
 
 end

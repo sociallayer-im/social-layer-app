@@ -50,6 +50,15 @@ class Api::BadgeControllerTest < ActionDispatch::IntegrationTest
     get api_badgelet_get_url, params: {auth_token: auth_token, id: Badgelet.last.id}
     assert_response :success
     p JSON.parse(response.body)["badgelet"]
+puts
+    get api_badge_get_url, params: {auth_token: auth_token, id: Badge.last.id}
+    assert_response :success
+    p JSON.parse(response.body)["badge"]
+puts
+
+    get api_badge_get_url, params: {auth_token: auth_token, id: Badge.last.id, with_badgelets: "1"}
+    assert_response :success
+    p JSON.parse(response.body)["badge"]
   end
 
 end

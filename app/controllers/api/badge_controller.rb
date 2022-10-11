@@ -28,11 +28,15 @@ class Api::BadgeController < ApiController
 
   # todo : add :page param doc
   # http GET "localhost:3000/badge/get" id==1
+  # http GET "localhost:3000/badge/get" id==1 with_badgelets==1
   def get
-    @badge = Badge.find(params[:id])
-    # render json: {badge: badge.as_json}
-
-    render template: "api/badge/badge"
+    if params[:with_badgelets]=="1"
+      @badge = Badge.includes(:badgelets).find(params[:id])
+      render template: "api/badge/badge_with_badgelets"
+    else
+      @badge = Badge.find(params[:id])
+      render template: "api/badge/badge"
+    end
   end
 
   # http POST "localhost:3000/badge/create" name=GoodBadge title=GoodBadge domain=goodbadge content=goodbadge image_url=http://example.com/img.jpg

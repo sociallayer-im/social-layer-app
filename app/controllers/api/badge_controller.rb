@@ -28,7 +28,7 @@ class Api::BadgeController < ApiController
     render json: {badge: badge.as_json}
   end
 
-  # http POST "localhost:3000/badge/create" sender_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodBadge title=GoodBadge domain=goodbadge content=goodbadge image_url=http://example.com/img.jpg
+  # http POST "localhost:3000/badge/create" name=GoodBadge title=GoodBadge domain=goodbadge content=goodbadge image_url=http://example.com/img.jpg
   def create
     profile = current_profile!
     domain = params[:domain]

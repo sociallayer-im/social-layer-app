@@ -31,8 +31,10 @@ class Api::BadgeletController < ApiController
   # todo : add :page param doc
   # http GET "localhost:3000/badgelet/get" id==1
   def get
-    badgelet = Badgelet.find(params[:id])
-    render json: {badgelet: badgelet.as_json(include: :badge)}
+    @badgelet = Badgelet.find(params[:id])
+    # render json: {badgelet: badgelet.as_json(include: :badge)}
+
+    render template: "api/badge/badgelet"
   end
 
 end

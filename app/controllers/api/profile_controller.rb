@@ -27,7 +27,7 @@ class Api::ProfileController < ApiController
         response_fields: 'tags,customCoordinates,isPrivateFile,metadata',
         tags: [ENV["APP_STAGE"] || "dev"],
         custom_metadata: {
-          "address": (profile && profile.address), # TODO : add email metadata again
+          "address": (profile && (profile.address || profile.email)),
         }
     )
     render json: {result: upload[:response]}
@@ -175,7 +175,8 @@ class Api::ProfileController < ApiController
   def create
     current_address!
 
-    unless params[:username].length >=6 && /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*$/.match(params[:username]).to_s == params[:username]
+    username = params[:username]
+    unless check_profile_username(username)
       render json: {result: "error", message: "invalid username"}
       return
     end

@@ -34,7 +34,7 @@ class Api::BadgeController < ApiController
     domain = params[:domain]
     domain = domain.split('.')[0]
 
-    unless domain.length >=4 && /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*$/.match(domain).to_s == domain
+    unless check_badge_domain_label(domain)
       render json: {result: "error", message: "invalid domain"}
       return
     end
@@ -60,12 +60,9 @@ class Api::BadgeController < ApiController
     profile = current_profile!
 
     # todo : add check again with email input
-    params[:receivers].each {|receiver| raise ActionController::ActionControllerError.new("invalid receiver id") unless check_address(receiver) }
+    params[:receivers].each {|receiver| raise ActionController::ActionControllerError.new("invalid receiver id") unless check_address_or_email(receiver) }
 
     badge = Badge.find(params[:badge_id])
-    p "badge"
-    p badge
-    p profile
     raise ActionController::ActionControllerError.new("access denied") unless badge.sender_id == profile.id
 
     # todo : badge.counter should start at 1

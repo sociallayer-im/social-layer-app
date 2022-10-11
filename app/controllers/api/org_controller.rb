@@ -30,7 +30,7 @@ class Api::OrgController < ApiController
     # profile = Profile.where(address: params[:address]).first
     profile = current_profile!
     org = Org.find(params[:org_id])
-    raise ActionController::ActionControllerError.new("access denied") unless org.owner_id == profile.address
+    raise ActionController::ActionControllerError.new("access denied") unless org.owner_id == profile.id
 
     org.update(content: params[:content], image_url: params[:image_url])
     render json: {org: org.as_json}
@@ -46,7 +46,7 @@ class Api::OrgController < ApiController
   def add_member
     profile = current_profile!
     org = Org.find(params[:org_id])
-    raise ActionController::ActionControllerError.new("access denied") unless org.owner_id == profile.address
+    raise ActionController::ActionControllerError.new("access denied") unless org.owner_id == profile.id
 
     member = Profile.find_by(address: params[:address])
     if member
@@ -63,7 +63,7 @@ class Api::OrgController < ApiController
   def remove_member
     profile = current_profile!
     org = Org.find(params[:org_id])
-    raise ActionController::ActionControllerError.new("access denied") unless org.owner_id == profile.address
+    raise ActionController::ActionControllerError.new("access denied") unless org.owner_id == profile.id
 
     results = Membership.where(org_id: params[:org_id], profile_id: params[:profile_id]).delete_all
     render json: {result: "ok"}

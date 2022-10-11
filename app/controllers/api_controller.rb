@@ -5,8 +5,16 @@ $hmac_secret = Rails.application.secret_key_base
 class ApiController < ApplicationController
   skip_before_action :verify_authenticity_token
 
-  def check_address(addr)
+  def check_address_or_email(addr)
     (addr =~ /^0x[a-fA-F0-9]{40}$/) == 0 || (addr =~ URI::MailTo::EMAIL_REGEXP) == 0
+  end
+
+  def check_badge_domain_label(domain)
+    (domain.length >=4) && ((domain =~ /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*$/) == 0)
+  end
+
+  def check_profile_username(username)
+    username.length >=6 && /^[a-z0-9]+([\-]{1}[a-z0-9]+)*$/.match(username).to_s == username
   end
 
   def current_address

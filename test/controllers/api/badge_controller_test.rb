@@ -7,7 +7,7 @@ class Api::BadgeControllerTest < ActionDispatch::IntegrationTest
     auth_token = gen_auth_token(prof.id)
 
 
-    post api_badge_create_url, params: {auth_token: auth_token, sender_id: $account_addr, name: "GoodBadge", title: "GoodBadge",  domain: "goodbadge", image_url: "http://example.com/img.jpg"}
+    post api_badge_create_url, params: {auth_token: auth_token, name: "GoodBadge", title: "GoodBadge",  domain: "goodbadge", image_url: "http://example.com/img.jpg"}
     assert_response :success
     p response.body
 

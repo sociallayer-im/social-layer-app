@@ -38,6 +38,15 @@ class ApiController < ApplicationController
     address
   end
 
+  def current_profile
+    return @address if @address
+
+    token = params[:auth_token]
+    decoded_token = JWT.decode token, $hmac_secret, true, { algorithm: 'HS256' }
+    profile_id = decoded_token[0]["id"]
+    @profile = Profile.find_by(id: profile_id)
+  end
+
   def current_profile!
     return @address if @address
 

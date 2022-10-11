@@ -173,7 +173,7 @@ class Api::ProfileController < ApiController
 
   # http POST "localhost:3000/profile/create" address=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 username=coder
   def create
-    current_address!
+    profile = current_profile
 
     username = params[:username]
     unless check_profile_username(username)
@@ -182,7 +182,7 @@ class Api::ProfileController < ApiController
     end
 
     domain = "#{params[:username]}.sociallayer.im"
-    profile = Profile.find_by(address: current_address)
+    # profile = Profile.find_by(address: current_address)
 
     if profile
       if profile.domain

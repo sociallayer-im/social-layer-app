@@ -4,28 +4,35 @@ class Api::BadgeController < ApiController
   # http GET "localhost:3000/badge/list"
   # http GET "localhost:3000/badge/list" status=pending
   def list
-    badges = Badge
+    @badges = Badge
 
     if params[:sender_id]
-      badges = badges.where(sender_id: params[:sender_id])
+      @badges = @badges.where(sender_id: params[:sender_id])
     end
-    render json: {badges: badges.page(params[:page])}
+    # render json: {badges: badges.page(params[:page])}
+
+    @badges = @badges.page(params[:page])
+    render template: "api/badge/badges"
   end
 
   def search
-    badges = Badge.where("title LIKE ?", "%" + params[:title] + "%")
+    @badges = Badge.where("title LIKE ?", "%" + params[:title] + "%")
     if params[:sender_id]
-      badges = badges.where(sender_id: params[:sender_id])
+      @badges = @badges.where(sender_id: params[:sender_id])
     end
 
-    render json: {badges: badges.page(params[:page]).as_json}
+    # render json: {badges: badges.page(params[:page]).as_json}
+    @badges = @badges.page(params[:page])
+    render template: "api/badge/badges"
   end
 
   # todo : add :page param doc
   # http GET "localhost:3000/badge/get" id==1
   def get
-    badge = Badge.find(params[:id])
-    render json: {badge: badge.as_json}
+    @badge = Badge.find(params[:id])
+    # render json: {badge: badge.as_json}
+
+    render template: "api/badge/badge"
   end
 
   # http POST "localhost:3000/badge/create" name=GoodBadge title=GoodBadge domain=goodbadge content=goodbadge image_url=http://example.com/img.jpg
@@ -40,7 +47,7 @@ class Api::BadgeController < ApiController
     end
     domain = "#{domain}.#{profile.domain}"
 
-    badge = Badge.create(
+    @badge = Badge.create(
       name: params[:name],
       domain: domain,
       title: params[:title],
@@ -52,7 +59,8 @@ class Api::BadgeController < ApiController
       org_id: params[:org_id], # todo : check user has org permission
       sender_id: profile.id,
       )
-    render json: {badge: badge.as_json}
+    render template: "api/badge/badge"
+    # render json: {badge: badge.as_json}
   end
 
   # http POST "localhost:3000/badge/send_batch" badge_id=1 receivers[]=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 content='GoodBadge' auth_token==$AUTH_TOKEN

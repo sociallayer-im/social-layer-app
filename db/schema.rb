@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_10_045807) do
+ActiveRecord::Schema[7.0].define(version: 2022_10_11_070628) do
   create_table "badge_collections", force: :cascade do |t|
     t.string "title"
     t.string "content"
@@ -68,6 +68,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_10_045807) do
     t.string "token_id"
     t.string "domain"
     t.text "content"
+    t.integer "value", default: 0
+    t.datetime "last_consumed_at"
+    t.integer "presend_id"
   end
 
   create_table "badges", force: :cascade do |t|
@@ -91,8 +94,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_10_045807) do
     t.string "hashtags"
     t.integer "badge_library_id"
     t.integer "badge_collection_id"
-    t.integer "value"
-    t.datetime "last_consumed_at"
     t.string "unlocking"
     t.integer "counter", default: 1
   end
@@ -140,6 +141,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_10_045807) do
     t.boolean "accepted", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "counter", default: 1
   end
 
   create_table "profiles", force: :cascade do |t|

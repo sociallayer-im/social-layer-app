@@ -41,4 +41,31 @@ json.badge do
   	json.email @badge.sender.email
   	json.domain @badge.sender.domain
   end
+
+  json.badgelets @badge.badgelets do |badgelet|
+    json.(badgelet, :id, :badge_id, :status, :metadata, :content, :subject_url, :domain, :token_id, :value, :last_consumed_at)
+    
+    if badgelet.receiver
+      json.receiver do
+        json.id badgelet.receiver.id
+        json.address badgelet.receiver.address
+        json.email badgelet.receiver.email
+        json.domain badgelet.receiver.domain
+      end
+    else
+      json.receiver nil
+    end
+
+    if badgelet.owner
+      json.owner do
+        json.id badgelet.owner.id
+        json.address badgelet.owner.address
+        json.email badgelet.owner.email
+        json.domain badgelet.owner.domain
+      end
+    else
+      json.owner nil
+    end
+
+  end
 end

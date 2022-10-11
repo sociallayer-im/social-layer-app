@@ -192,7 +192,7 @@ class Api::ProfileController < ApiController
         render json: {result: "ok"}
       end
     else
-      Profile.create(address: current_address, username: params[:username], domain: domain)
+      Profile.create(address: current_address, username: params[:username], domain: domain, token_id: Badge.get_badgelet_namehash(domain))
       render json: {result: "ok"}
     end
   end

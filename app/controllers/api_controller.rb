@@ -1,5 +1,6 @@
 require 'jwt'
 
+
 $hmac_secret = Rails.application.secret_key_base
 
 class ApiController < ApplicationController

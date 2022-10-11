@@ -41,6 +41,7 @@ gem "imagekitio"
 gem "appsignal"
 gem "ed25519", "1.3.0"
 gem "bcrypt_pbkdf", "1.1.0"
+gem "keccak", "~> 1.3"
 
 gem "rails_admin", "~> 3.0"
 

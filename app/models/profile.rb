@@ -8,6 +8,11 @@ class Profile < ApplicationRecord
 
   has_many :memberships
 
+  def set_token_id
+    self.token_id = Badge.get_badgelet_namehash(self.domain)
+    save
+  end
+
   rails_admin do 
     list do
       configure :image_url do

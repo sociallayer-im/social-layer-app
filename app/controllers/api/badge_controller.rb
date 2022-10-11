@@ -54,6 +54,7 @@ class Api::BadgeController < ApiController
     @badge = Badge.create(
       name: params[:name],
       domain: domain,
+      token_id: Badge.get_badgelet_namehash(domain),
       title: params[:title],
       content: params[:content],
       metadata: params[:metadata],
@@ -67,7 +68,7 @@ class Api::BadgeController < ApiController
     # render json: {badge: badge.as_json}
   end
 
-  # http POST "localhost:3000/badge/send_batch" badge_id=1 receivers[]=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 content='GoodBadge' auth_token==$AUTH_TOKEN
+  # http POST "localhost:3000/badge/send" badge_id=1 receivers[]=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 content='GoodBadge' auth_token==$AUTH_TOKEN
   def send_badge
     profile = current_profile!
 
@@ -81,9 +82,11 @@ class Api::BadgeController < ApiController
     badgelets = params[:receivers].map {|receiver|
       receiver_id = Profile.find_by(address: receiver) || Profile.find_by(email: receiver) || Profile.find_by(id: receiver)
       receiver_id = receiver_id.id
+      domain = "#{badge.domain}##{badge.counter}"
       badgelet = Badgelet.create(
         index: badge.counter,
-        domain: "#{badge.domain}##{badge.counter}",
+        domain: domain,
+        token_id: Badge.get_badgelet_namehash(domain),
         content: params[:content] || badge.content,
         metadata: badge.metadata,
         subject_url: params[:subject_url],

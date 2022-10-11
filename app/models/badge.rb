@@ -1,3 +1,5 @@
+require 'digest/keccak'
+
 class Badge < ApplicationRecord
 
   belongs_to :sender, class_name: 'Profile', foreign_key: "sender_id"
@@ -12,6 +14,44 @@ class Badge < ApplicationRecord
   has_many :badgelets
 
   has_many :presends
+
+  def self.sha3raw(str)
+    Digest::Keccak.digest(str, 256)
+  end
+
+  def self.tohex(binary)
+    binary.unpack('H*').first
+  end
+
+  def self.get_namehash(str)
+    node = "\x0" * 32
+    labels = str.split(".").reverse
+    puts "labels"
+    p labels
+    while labels.length > 0
+      label = labels.shift
+      labelhash = sha3raw(label)
+      node = sha3raw(node+labelhash)
+    end
+
+    "0x" + tohex(node)
+  end
+
+  def self.get_badgelet_namehash(str)
+    domain, index = str.split("#")
+    str = if index
+      "#{index}.#.#{domain}"
+    else
+      domain
+    end
+    # puts str
+    get_namehash(str)
+  end
+
+  def set_token_id
+    self.token_id = Badge.get_badgelet_namehash(self.domain)
+    save
+  end
 
   rails_admin do 
     list do

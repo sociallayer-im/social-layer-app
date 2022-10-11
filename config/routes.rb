@@ -50,7 +50,5 @@ Rails.application.routes.draw do
     get "org/members", to: "org#members"
     post "org/add-member", to: "org#add_member"
     post "org/remove-member", to: "org#remove_member"
-
-    post "upload/image", to: "badge#upload_image"
   end
 end

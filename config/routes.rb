@@ -44,6 +44,12 @@ Rails.application.routes.draw do
     get "badgelet/search", to: "badgelet#search"
     get "badgelet/get", to: "badgelet#get"
 
+    get "presend/list", to: "presend#list"
+    get "presend/get", to: "presend#get"
+    post "presend/create", to: "presend#create"
+    post "presend/use", to: "presend#use"
+    post "presend/revoke", to: "presend#revoke"
+
     get "org/list", to: "org#list"
     get "org/get", to: "org#get"
     post "org/create", to: "org#create"

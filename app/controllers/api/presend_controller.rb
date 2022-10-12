@@ -23,7 +23,29 @@ class Api::PresendController < ApiController
   end
 
   def use
-    render json: "ok"
+    profile = current_profile!
+    presend = Presend.find(params[:id])
+    badge = presend.badge
+
+    domain = "#{badge.domain}##{badge.counter}"
+
+    @badgelet = Badgelet.create(
+      index: badge.counter,
+      domain: domain,
+      token_id: Badge.get_badgelet_namehash(domain),
+      # content: params[:content] || badge.content,
+      metadata: badge.metadata,
+      # subject_url: params[:subject_url],
+      status: "accepted",
+      badge_id: badge.id,
+      sender_id: presend.sender.id,
+      receiver_id: profile.id,
+      owner_id: profile.id,
+      presend_id: presend.id)
+
+    badge.increment!(:counter)
+
+    render template: "api/badge/badgelet"
   end
 
   # http POST "localhost:3000/presend/create" owner_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodEvent

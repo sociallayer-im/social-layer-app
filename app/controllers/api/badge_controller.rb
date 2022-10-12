@@ -78,9 +78,14 @@ class Api::BadgeController < ApiController
     badge = Badge.find(params[:badge_id])
     raise ActionController::ActionControllerError.new("access denied") unless badge.sender_id == profile.id
 
-    # todo : badge.counter should start at 1
-    badgelets = params[:receivers].map {|receiver|
+    # todo : badgelet should copy value from badge
+    @badgelets = params[:receivers].map {|receiver|
       receiver_id = Profile.find_by(address: receiver) || Profile.find_by(email: receiver) || Profile.find_by(id: receiver)
+      if receiver_id.nil? && receiver.include?("@")
+        receiver_id = Profile.find_or_create_by(email: receiver)
+      elsif receiver_id.nil?
+        receiver_id = Profile.find_or_create_by(address: receiver)
+      end
       receiver_id = receiver_id.id
       domain = "#{badge.domain}##{badge.counter}"
       badgelet = Badgelet.create(
@@ -101,44 +106,48 @@ class Api::BadgeController < ApiController
       badgelet
     }
 
-    render json: {badgelets: badgelets.as_json}
+    # render json: {badgelets: badgelets.as_json}
+    render template: "api/badge/badgelets"
   end
 
   # http POST "localhost:3000/badge/accept" badgelet_id=1
   def accept_badge
     profile = current_profile!
 
-    badgelet = Badgelet.find(params[:badgelet_id])
+    @badgelet = Badgelet.find(params[:badgelet_id])
 
-    raise ActionController::ActionControllerError.new("access denied") unless badgelet.owner_id == profile.id
-    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "pending"
+    raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
+    raise ActionController::ActionControllerError.new("invalid state") unless @badgelet.status == "pending"
 
-    badgelet.update(status: "accepted")
-    render json: {badgelet: badgelet.as_json}
+    @badgelet.update(status: "accepted")
+    # render json: {badgelet: badgelet.as_json}
+    render template: "api/badge/badgelet"
   end
 
   # http POST "localhost:3000/badge/reject" badgelet_id=1
   def reject_badge
     profile = current_profile!
 
-    badgelet = Badgelet.find(params[:badgelet_id])
-    raise ActionController::ActionControllerError.new("access denied") unless badgelet.owner_id == profile.id
-    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "pending"
+    @badgelet = Badgelet.find(params[:badgelet_id])
+    raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
+    raise ActionController::ActionControllerError.new("invalid state") unless @badgelet.status == "pending"
 
-    badgelet.update(status: "rejected")
-    render json: {badgelet: badgelet.as_json}
+    @badgelet.update(status: "rejected")
+    # render json: {badgelet: badgelet.as_json}
+    render template: "api/badge/badgelet"
   end
 
   # http POST "localhost:3000/badge/revoke" badgelet_id=1
   def revoke_badge
     profile = current_profile!
 
-    badgelet = Badgelet.find(params[:badgelet_id])
-    raise ActionController::ActionControllerError.new("access denied") unless badgelet.owner_id == profile.id || badgelet.sender_id == profile.id
-    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "pending" || badgelet.status == "accepted"
+    @badgelet = Badgelet.find(params[:badgelet_id])
+    raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id || badgelet.sender_id == profile.id
+    raise ActionController::ActionControllerError.new("invalid state") unless @badgelet.status == "pending" || badgelet.status == "accepted"
 
-    badgelet.update(status: "revoked")
-    render json: {badgelet: badgelet.as_json}
+    @badgelet.update(status: "revoked")
+    # render json: {badgelet: badgelet.as_json}
+    render template: "api/badge/badgelet"
   end
 
 end

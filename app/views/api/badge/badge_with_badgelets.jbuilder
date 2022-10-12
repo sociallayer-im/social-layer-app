@@ -35,11 +35,16 @@ json.badge do
     json.subject nil
   end
 
-  json.sender do
-  	json.id @badge.sender.id
-  	json.address @badge.sender.address
-  	json.email @badge.sender.email
-  	json.domain @badge.sender.domain
+  if @badge.sender
+    json.sender do
+      json.id @badge.sender.id
+      json.address @badge.sender.address
+      json.email @badge.sender.email
+      json.domain @badge.sender.domain
+      json.image_url @badgelet.sender.image_url
+    end
+  else
+    json.sender nil
   end
 
   json.badgelets @badge.badgelets do |badgelet|
@@ -51,6 +56,7 @@ json.badge do
         json.address badgelet.receiver.address
         json.email badgelet.receiver.email
         json.domain badgelet.receiver.domain
+        json.image_url badgelet.receiver.image_url
       end
     else
       json.receiver nil
@@ -62,6 +68,7 @@ json.badge do
         json.address badgelet.owner.address
         json.email badgelet.owner.email
         json.domain badgelet.owner.domain
+        json.image_url badgelet.owner.image_url
       end
     else
       json.owner nil

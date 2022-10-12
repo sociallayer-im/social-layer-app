@@ -7,6 +7,7 @@ json.badgelets @badgelets do |badgelet|
       json.address badgelet.receiver.address
       json.email badgelet.receiver.email
       json.domain badgelet.receiver.domain
+      json.image_url badgelet.receiver.image_url
     end
   else
     json.receiver nil
@@ -18,6 +19,7 @@ json.badgelets @badgelets do |badgelet|
       json.address badgelet.owner.address
       json.email badgelet.owner.email
       json.domain badgelet.owner.domain
+      json.image_url badgelet.owner.image_url
     end
   else
     json.owner nil
@@ -29,6 +31,7 @@ json.badgelets @badgelets do |badgelet|
       json.address badgelet.sender.address
       json.email badgelet.sender.email
       json.domain badgelet.sender.domain
+      json.image_url badgelet.sender.image_url
     end
   else
     json.sender nil

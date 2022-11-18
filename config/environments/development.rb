@@ -11,6 +11,9 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
+  config.hosts << "3000-sociallayerim-solarruby-8gq847a86f9.ws-us75.gitpod.io"
+  config.hosts << "3000-sociallayerim-solarruby-8gq847a86f9.ws-us74.gitpod.io"
+
   # Show full error reports.
   config.consider_all_requests_local = true
 

@@ -5,7 +5,7 @@ $hmac_secret = Rails.application.secret_key_base
 class Api::ProfileController < ApiController
 
   def home
-    render json: "ok"
+    render json: {result: "ok"}
   end
 
   def current

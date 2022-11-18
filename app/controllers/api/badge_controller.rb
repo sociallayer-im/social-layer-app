@@ -150,4 +150,30 @@ class Api::BadgeController < ApiController
     render template: "api/badge/badgelet"
   end
 
+  # http POST "localhost:3000/badge/hide" badgelet_id=1
+  def hide_badge
+    profile = current_profile!
+
+    @badgelet = Badgelet.find(params[:badgelet_id])
+    raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
+    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "accepted"
+
+    @badgelet.update(hide: true)
+    # render json: {badgelet: badgelet.as_json}
+    render template: "api/badge/badgelet"
+  end
+
+  # http POST "localhost:3000/badge/top" badgelet_id=1
+  def top_badge
+    profile = current_profile!
+
+    @badgelet = Badgelet.find(params[:badgelet_id])
+    raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
+    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "accepted"
+
+    @badgelet.update(top: true)
+    # render json: {badgelet: badgelet.as_json}
+    render template: "api/badge/badgelet"
+  end
+
 end

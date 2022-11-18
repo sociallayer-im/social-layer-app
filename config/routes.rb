@@ -39,6 +39,8 @@ Rails.application.routes.draw do
     post "badge/accept", to: "badge#accept_badge"
     post "badge/reject", to: "badge#reject_badge"
     post "badge/revoke", to: "badge#revoke_badge"
+    post "badge/hide", to: "badge#hide_badge"
+    post "badge/top", to: "badge#top_badge"
 
     get "badgelet/list", to: "badgelet#list"
     get "badgelet/search", to: "badgelet#search"

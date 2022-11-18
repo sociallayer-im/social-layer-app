@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_10_11_092446) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_18_051130) do
   create_table "badge_collections", force: :cascade do |t|
     t.string "title"
     t.string "content"
@@ -71,6 +71,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_10_11_092446) do
     t.integer "value", default: 0
     t.datetime "last_consumed_at"
     t.integer "presend_id"
+    t.boolean "hide", default: false
+    t.boolean "top", default: false
   end
 
   create_table "badges", force: :cascade do |t|

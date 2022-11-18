@@ -9,6 +9,9 @@ class Api::BadgeletController < ApiController
       @badgelets = @badgelets.where(status: params[:status])
     end
 
+    if params[:hashtag]
+      @badgelets = @badgelets.where(sender_id: params[:sender_id])
+    end
     if params[:sender_id]
       @badgelets = @badgelets.where(sender_id: params[:sender_id])
     end
@@ -21,6 +24,7 @@ class Api::BadgeletController < ApiController
     if params[:badge_id]
       @badgelets = @badgelets.where(badge_id: params[:badge_id])
     end
+    
     @badgelets = @badgelets.includes(:badge).page(params[:page])
     # render json: {badgelets: @badgelets.includes(:badge).page(params[:page]).as_json(include: :badge)}
 

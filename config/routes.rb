@@ -41,6 +41,8 @@ Rails.application.routes.draw do
     post "badge/revoke", to: "badge#revoke_badge"
     post "badge/hide", to: "badge#hide_badge"
     post "badge/top", to: "badge#top_badge"
+    post "badge/unhide", to: "badge#unhide_badge"
+    post "badge/untop", to: "badge#untop_badge"
 
     get "badgelet/list", to: "badgelet#list"
     get "badgelet/search", to: "badgelet#search"

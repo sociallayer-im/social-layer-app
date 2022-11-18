@@ -51,7 +51,7 @@ class Api::BadgeController < ApiController
     end
     domain = "#{domain}.#{profile.domain}"
 
-    @badge = Badge.create(
+    @badge = Badge.new(
       name: params[:name],
       domain: domain,
       token_id: Badge.get_badgelet_namehash(domain),
@@ -64,6 +64,10 @@ class Api::BadgeController < ApiController
       org_id: params[:org_id], # todo : check user has org permission
       sender_id: profile.id,
       )
+    if params[:content]
+      @badge.hashtags = @badge.content.scan(/#\S+/).join(" ")
+    end
+    @badge.save
     render template: "api/badge/badge"
     # render json: {badge: badge.as_json}
   end
@@ -163,6 +167,19 @@ class Api::BadgeController < ApiController
     render template: "api/badge/badgelet"
   end
 
+  # http POST "localhost:3000/badge/unhide" badgelet_id=1
+  def unhide_badge
+    profile = current_profile!
+
+    @badgelet = Badgelet.find(params[:badgelet_id])
+    raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
+    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "accepted"
+
+    @badgelet.update(hide: false)
+    # render json: {badgelet: badgelet.as_json}
+    render template: "api/badge/badgelet"
+  end
+
   # http POST "localhost:3000/badge/top" badgelet_id=1
   def top_badge
     profile = current_profile!
@@ -172,6 +189,19 @@ class Api::BadgeController < ApiController
     raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "accepted"
 
     @badgelet.update(top: true)
+    # render json: {badgelet: badgelet.as_json}
+    render template: "api/badge/badgelet"
+  end
+
+  # http POST "localhost:3000/badge/untop" badgelet_id=1
+  def untop_badge
+    profile = current_profile!
+
+    @badgelet = Badgelet.find(params[:badgelet_id])
+    raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
+    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "accepted"
+
+    @badgelet.update(top: false)
     # render json: {badgelet: badgelet.as_json}
     render template: "api/badge/badgelet"
   end

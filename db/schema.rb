@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_18_051130) do
+ActiveRecord::Schema[7.0].define(version: 2022_11_18_064524) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -76,6 +76,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_18_051130) do
     t.integer "presend_id"
     t.boolean "hide", default: false
     t.boolean "top", default: false
+    t.string "hashtags", array: true
   end
 
   create_table "badges", force: :cascade do |t|
@@ -96,11 +97,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_18_051130) do
     t.string "resource_url"
     t.string "subject_url"
     t.string "badge_class"
-    t.string "hashtags"
     t.integer "badge_library_id"
     t.integer "badge_collection_id"
     t.string "unlocking"
     t.integer "counter", default: 1
+    t.string "hashtags", array: true
   end
 
   create_table "contacts", force: :cascade do |t|

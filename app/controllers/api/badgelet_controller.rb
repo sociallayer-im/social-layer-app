@@ -10,7 +10,7 @@ class Api::BadgeletController < ApiController
     end
 
     if params[:hashtag]
-      @badgelets = @badgelets.where(sender_id: params[:sender_id])
+      @badgelets = @badgelets.where("? = ANY (hashtags)", params[:hashtag])
     end
     if params[:sender_id]
       @badgelets = @badgelets.where(sender_id: params[:sender_id])
@@ -23,6 +23,10 @@ class Api::BadgeletController < ApiController
     end
     if params[:badge_id]
       @badgelets = @badgelets.where(badge_id: params[:badge_id])
+    end
+
+    unless params[:show_hidden]
+      @badgelets = @badgelets.where(hide: false)
     end
     
     @badgelets = @badgelets.includes(:badge).page(params[:page])

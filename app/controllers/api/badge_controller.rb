@@ -64,8 +64,11 @@ class Api::BadgeController < ApiController
       org_id: params[:org_id], # todo : check user has org permission
       sender_id: profile.id,
       )
-    if params[:content]
-      @badge.hashtags = @badge.content.scan(/#\S+/).join(" ")
+    if @badge.content
+      hashtags = @badge.content.scan(/#\S+/)
+      if hashtags
+        @badge.hashtags = hashtags
+      end
     end
     @badge.save
     render template: "api/badge/badge"
@@ -92,7 +95,7 @@ class Api::BadgeController < ApiController
       end
       receiver_id = receiver_id.id
       domain = "#{badge.domain}##{badge.counter}"
-      badgelet = Badgelet.create(
+      badgelet = Badgelet.new(
         index: badge.counter,
         domain: domain,
         token_id: Badge.get_badgelet_namehash(domain),
@@ -104,6 +107,14 @@ class Api::BadgeController < ApiController
         sender_id: profile.id,
         receiver_id: receiver_id,
         owner_id: receiver_id)
+
+      if badgelet.content
+        hashtags = badgelet.content.scan(/#\S+/)
+        if hashtags
+          badgelet.hashtags = hashtags
+        end
+      end
+      badgelet.save
 
       badge.increment!(:counter)
 
@@ -160,7 +171,7 @@ class Api::BadgeController < ApiController
 
     @badgelet = Badgelet.find(params[:badgelet_id])
     raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
-    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "accepted"
+    raise ActionController::ActionControllerError.new("invalid state") unless @badgelet.status == "accepted"
 
     @badgelet.update(hide: true)
     # render json: {badgelet: badgelet.as_json}
@@ -173,7 +184,7 @@ class Api::BadgeController < ApiController
 
     @badgelet = Badgelet.find(params[:badgelet_id])
     raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
-    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "accepted"
+    raise ActionController::ActionControllerError.new("invalid state") unless @badgelet.status == "accepted"
 
     @badgelet.update(hide: false)
     # render json: {badgelet: badgelet.as_json}
@@ -186,7 +197,7 @@ class Api::BadgeController < ApiController
 
     @badgelet = Badgelet.find(params[:badgelet_id])
     raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
-    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "accepted"
+    raise ActionController::ActionControllerError.new("invalid state") unless @badgelet.status == "accepted"
 
     @badgelet.update(top: true)
     # render json: {badgelet: badgelet.as_json}
@@ -199,7 +210,7 @@ class Api::BadgeController < ApiController
 
     @badgelet = Badgelet.find(params[:badgelet_id])
     raise ActionController::ActionControllerError.new("access denied") unless @badgelet.owner_id == profile.id
-    raise ActionController::ActionControllerError.new("invalid state") unless badgelet.status == "accepted"
+    raise ActionController::ActionControllerError.new("invalid state") unless @badgelet.status == "accepted"
 
     @badgelet.update(top: false)
     # render json: {badgelet: badgelet.as_json}

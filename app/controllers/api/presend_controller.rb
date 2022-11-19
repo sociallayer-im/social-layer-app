@@ -31,7 +31,7 @@ class Api::PresendController < ApiController
     presend = Presend.find(params[:id])
     badge = presend.badge
 
-    raise ActionController::ActionControllerError.new("access denied") unless presend.code == params[:code]
+    raise ActionController::ActionControllerError.new("access denied") unless presend.code.to_s == params[:code].to_s
 
     domain = "#{badge.domain}##{badge.counter}"
 
@@ -49,10 +49,10 @@ class Api::PresendController < ApiController
       owner_id: profile.id,
       presend_id: presend.id)
   
-    if badgelet.content
-      hashtags = badgelet.content.scan(/#\S+/)
+    if @badgelet.content
+      hashtags = @badgelet.content.scan(/#\S+/)
       if hashtags
-        badgelet.hashtags = hashtags
+        @badgelet.hashtags = hashtags
       end
     end
     @badgelet.save

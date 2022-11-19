@@ -2,7 +2,11 @@ class Api::PresendController < ApiController
 
   # http GET "localhost:3000/presend/list"
   def list
-    @presends = Presend.includes(:badge).page(params[:page])
+    @presends = Presend.includes(:badge)
+    if params[:sender_id]
+      @presends = @presends.where(sender_id: params[:sender_id])
+    end
+    @presends = @presends.page(params[:page])
     render json: {presends: @presends.as_json}
   end
 

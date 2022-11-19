@@ -13,6 +13,7 @@ Rails.application.configure do
 
   config.hosts << "3000-sociallayerim-solarruby-8gq847a86f9.ws-us75.gitpod.io"
   config.hosts << "3000-sociallayerim-solarruby-8gq847a86f9.ws-us74.gitpod.io"
+  config.hosts << "jiangplus-probable-space-potato-wvxxwr75r72vgwj-3000.preview.app.github.dev"
 
   # Show full error reports.
   config.consider_all_requests_local = true

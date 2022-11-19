@@ -8,18 +8,18 @@ class Api::PresendController < ApiController
 
   # http GET "localhost:3000/presend/get" id==1
   def get
-    @presend = Presend.find(params[:id])
-    render json: {presend: @presend.includes(:badge).as_json(include: :badge)}
+    @presend = Presend.includes(:badge).find(params[:id])
+    render json: {presend: @presend.as_json(include: :badge)}
   end
 
   def revoke
     profile = current_profile!
-    presend = Presend.find(params[:id])
+    presend = Presend.includes(:badge).find(params[:id])
 
     raise ActionController::ActionControllerError.new("access denied") unless presend.sender_id == profile.id
     presend.update(counter: 0)
 
-    render json: {presend: @presend.includes(:badge).as_json(include: :badge)}
+    render json: {presend: @presend.as_json(include: :badge)}
   end
 
   def use

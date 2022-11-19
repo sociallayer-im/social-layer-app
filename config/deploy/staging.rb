@@ -10,7 +10,7 @@ server "dev.sociallayer.im", user: "ubuntu", roles: %w{app}
 
 set :deploy_to, "/home/ubuntu/apps/solar-staging"
 
-set :branch, "dev"
+set :branch, "main"
 
 # role-based syntax
 # ==================

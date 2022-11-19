@@ -7,7 +7,7 @@ class Api::PresendController < ApiController
       @presends = @presends.where(sender_id: params[:sender_id])
     end
     @presends = @presends.page(params[:page])
-    render json: {presends: @presends.as_json}
+    render template: "api/presend/presends"
   end
 
   # http GET "localhost:3000/presend/get" id==1

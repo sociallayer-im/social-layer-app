@@ -12,7 +12,17 @@ class Api::PresendController < ApiController
 
   # http GET "localhost:3000/presend/get" id==1
   def get
+
     @presend = Presend.includes(:badge).find(params[:id])
+
+    if current_address
+      profile = current_profile!
+      if @presend.sender_id == profile.id
+        @show_presend_code = true
+      end
+    end
+
+
     render template: "api/presend/presend"
   end
 

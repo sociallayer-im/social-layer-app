@@ -1,5 +1,9 @@
 json.presends @presends do |presend|
-  json.(presend, :id, :sender_id, :badge_id, :badgelet_id, :code, :message, :counter, :accepted, :expires_at, :created_at, :updated_at)
+  # `presend.code` omitted
+  json.(presend, :id, :sender_id, :badge_id, :badgelet_id, :message, :counter, :accepted, :expires_at, :created_at, :updated_at)
+  if @show_presend_code
+    json.code presend.code
+  end
 
   json.badge do
   json.(presend.badge, 

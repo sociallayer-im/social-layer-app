@@ -7,12 +7,19 @@ class Api::PresendController < ApiController
       @presends = @presends.where(sender_id: params[:sender_id])
     end
     @presends = @presends.page(params[:page])
+
+    if current_address
+      @profile = current_profile!
+      if params[:sender_id] && params[:sender_id] == @profile.id.to_s
+        @show_presend_code = true
+      end
+    end
+
     render template: "api/presend/presends"
   end
 
   # http GET "localhost:3000/presend/get" id==1
   def get
-
     @presend = Presend.includes(:badge).find(params[:id])
 
     if current_address
@@ -21,7 +28,6 @@ class Api::PresendController < ApiController
         @show_presend_code = true
       end
     end
-
 
     render template: "api/presend/presend"
   end

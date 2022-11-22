@@ -31,7 +31,14 @@ class Api::PresendController < ApiController
     presend = Presend.find(params[:id])
     badge = presend.badge
 
-    raise ActionController::ActionControllerError.new("access denied") unless presend.code.to_s == params[:code].to_s
+    unless presend.code.to_s == params[:code].to_s
+      render json: { result: "error" , message: "presend code is empty or incorrect"}
+      return
+    end
+    unless Badgelet.where(presend_id: params[:id], receiver_id: profile.id).blank?
+      render json: { result: "error" , message: "user has already claimed presend"}
+      return
+    end
 
     domain = "#{badge.domain}##{badge.counter}"
 

@@ -4,7 +4,7 @@ class Api::BadgeletController < ApiController
   # http GET "localhost:3000/badgelet/list"
   # http GET "localhost:3000/badgelet/list" status=pending
   def list
-    @badgelets = Badgelet
+    @badgelets = Badgelet.includes(:owner, :receiver, :sender)
     if params[:status]
       @badgelets = @badgelets.where(status: params[:status])
     end

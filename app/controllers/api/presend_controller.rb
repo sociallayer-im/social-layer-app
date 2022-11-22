@@ -13,7 +13,7 @@ class Api::PresendController < ApiController
   # http GET "localhost:3000/presend/get" id==1
   def get
     @presend = Presend.includes(:badge).find(params[:id])
-    render json: {presend: @presend.as_json(include: :badge)}
+    render template: "api/presend/presend"
   end
 
   def revoke

@@ -41,7 +41,7 @@ json.badge do
       json.address @badge.sender.address
       json.email @badge.sender.email
       json.domain @badge.sender.domain
-      json.image_url @badgelet.sender.image_url
+      json.image_url @badge.sender.image_url
     end
   else
     json.sender nil

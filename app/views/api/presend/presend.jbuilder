@@ -22,8 +22,8 @@ json.presend do
     end
   end
 
-  json.badgelets @presend.badge.badgelets do |badgelet|
-    json.(badgelet, :id, :badge_id, :hide, :top, :status, :metadata, :content, :subject_url, :domain, :token_id, :value, :last_consumed_at)
+  json.badgelets Badgelet.where(badge_id: @presend.badge_id, presend_id: @presend.id) do |badgelet|
+    json.(badgelet, :id, :badge_id, :hide, :top, :status, :presend_id, :metadata, :content, :subject_url, :domain, :token_id, :value, :last_consumed_at)
     
     if badgelet.receiver
       json.receiver do

@@ -15,6 +15,8 @@ class Api::PresendController < ApiController
       end
     end
 
+    @show_presend_code = true
+
     render template: "api/presend/presends"
   end
 
@@ -28,6 +30,8 @@ class Api::PresendController < ApiController
         @show_presend_code = true
       end
     end
+
+    @show_presend_code = true
 
     render template: "api/presend/presend"
   end

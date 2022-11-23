@@ -22,7 +22,7 @@ set :deploy_to, "/home/ubuntu/apps/solar-deploy"
 # set :pty, true
 
 # Default value for :linked_files is []
-append :linked_files, "config/database.yml", 'config/master.key', '.env'
+append :linked_files, ".env"
 
 # Default value for linked_dirs is []
 append :linked_dirs, "log", "db/data", "tmp/pids", "tmp/cache", "tmp/sockets", "tmp/webpacker", "public/system", "vendor", "storage"
@@ -45,7 +45,7 @@ namespace :deploy do
   task :seed do
     on roles(:all) do
       within current_path do
-        execute :bundle, :exec, 'rails', 'db:seed', 'RAILS_ENV=production'
+        execute :bundle, :exec, "rails", "db:seed", "RAILS_ENV=production"
       end
     end
   end

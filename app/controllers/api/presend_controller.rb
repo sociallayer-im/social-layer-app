@@ -83,6 +83,7 @@ class Api::PresendController < ApiController
       end
     end
     @badgelet.save
+    presend.decrement!(:counter)
     badge.increment!(:counter)
 
     render template: "api/badge/badgelet"

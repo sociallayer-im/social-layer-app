@@ -38,3 +38,6 @@
 .env
 /siwe_app/node_modules/
 /data/
+/db/data/
+/store/
+

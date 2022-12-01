@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_11_18_064524) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_01_054042) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -111,6 +111,24 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_18_064524) do
     t.datetime "created_at", null: false
   end
 
+  create_table "events", force: :cascade do |t|
+    t.string "title"
+    t.datetime "start_time"
+    t.datetime "ending_time"
+    t.string "location_type"
+    t.string "location"
+    t.integer "owner_id"
+    t.integer "org_id"
+    t.text "content"
+    t.string "cover"
+    t.string "status", default: "new", comment: "draft | open | closed | cancel"
+    t.integer "max_participant"
+    t.boolean "need_approval"
+    t.string "host_info"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "mail_tokens", force: :cascade do |t|
     t.string "email"
     t.string "code"
@@ -136,6 +154,16 @@ ActiveRecord::Schema[7.0].define(version: 2022_11_18_064524) do
     t.integer "owner_id"
     t.string "token_id"
     t.index ["name"], name: "index_orgs_on_name", unique: true
+  end
+
+  create_table "participants", force: :cascade do |t|
+    t.integer "profile_id"
+    t.integer "event_id"
+    t.text "message"
+    t.datetime "check_time"
+    t.string "status", default: "new", comment: "new | approved | disapproved | checked | cancel"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "presends", force: :cascade do |t|

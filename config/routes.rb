@@ -55,7 +55,6 @@ Rails.application.routes.draw do
     post "presend/revoke", to: "presend#revoke"
 
     get "event/list", to: "event#list"
-    get "event/participants", to: "event#participants"
     get "event/my", to: "event#my"
     get "event/get", to: "event#get"
     post "event/join", to: "event#join"

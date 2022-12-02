@@ -11,12 +11,6 @@ class Api::EventController < ApiController
     render template: "api/event/events"
   end
 
-  def participants
-  	@participants = Participant.includes(:profile).where(event_id: profile.id)
-    render json: {participant: @participant.as_json(include: :profile)}
-    # render template: "api/event/participants"
-  end
-
   def my
     profile = current_profile!
   	@participants = Participant.includes(:event).where(profile_id: profile.id)

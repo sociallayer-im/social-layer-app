@@ -5,7 +5,7 @@ class Api::EventControllerTest < ActionDispatch::IntegrationTest
     prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
     auth_token = gen_auth_token(prof.id)
 
-    post api_event_create_url, params: {auth_token: auth_token, title: "christmas", start_time: DateTime.current, ending_time: (DateTime.current+ 1), location_type: "online", location: "http://zoom.us", content: "wonderful", cover: "", max_participant: 10, need_approval: false, host_info: "coderr@example.com"}
+    post api_event_create_url, params: {auth_token: auth_token, title: "christmas", start_time: DateTime.current.to_s, ending_time: (DateTime.current+ 1).to_s, location_type: "online", location: "http://zoom.us", content: "wonderful", cover: "", max_participant: 10, need_approval: false, host_info: "coderr@example.com"}
     assert_response :success
     p response.body
 

@@ -66,7 +66,7 @@ class Api::PresendController < ApiController
       index: badge.counter,
       domain: domain,
       token_id: Badge.get_badgelet_namehash(domain),
-      # content: params[:content] || badge.content,
+      content: presend.message || badge.content,
       metadata: badge.metadata,
       # subject_url: params[:subject_url],
       status: "accepted",

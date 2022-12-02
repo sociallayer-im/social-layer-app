@@ -21,16 +21,16 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
-  test "api#profile/signin_with_email" do
-    post api_profile_send_email_url, params: {email: "hello@email.com"}
-    assert_response :success
-    p response.body
+  # test "api#profile/signin_with_email" do
+  #   post api_profile_send_email_url, params: {email: "hello@email.com"}
+  #   assert_response :success
+  #   p response.body
 
-    post api_profile_signin_with_email_url, params: {email: "hello@email.com", code: MailToken.last.code}
-    assert_response :success
-    p response.body
-    auth_token = JSON.parse(response.body)["auth_token"]
-  end
+  #   post api_profile_signin_with_email_url, params: {email: "hello@email.com", code: MailToken.last.code}
+  #   assert_response :success
+  #   p response.body
+  #   auth_token = JSON.parse(response.body)["auth_token"]
+  # end
 
   test "api#profile/get" do
     prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")

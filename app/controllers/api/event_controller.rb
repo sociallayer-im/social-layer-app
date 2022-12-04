@@ -60,17 +60,20 @@ class Api::EventController < ApiController
     render json: {participant: @participant.as_json}
   end
 
-  # http POST "localhost:3000/event/create" owner_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodEvent
+  # http POST "localhost:3000/event/create"
   def create
     profile = current_profile!
 
     @event = Event.create(
       owner: profile,
       title: params[:title],
+      category: params[:category],
+      tags: params[:tags],
       start_time: params[:start_time],
       ending_time: params[:ending_time],
-      location_type: params[:location_type], # online | offline
+      location_type: params[:location_type], # online | offline | both
       location: params[:location],
+      online_location: params[:online_location],
       content: params[:content],
       cover: params[:cover],
       status: "new",
@@ -78,6 +81,42 @@ class Api::EventController < ApiController
       need_approval: params[:need_approval],
       host_info: params[:host_info],
       )
+    render json: {event: @event.as_json}
+  end
+
+  # http POST "localhost:3000/event/update"
+  def update
+    profile = current_profile!
+
+    @event = Event.find(params[:id])
+    raise ActionController::ActionControllerError.new("access denied") unless @event.owner_id == profile.id
+
+    @event.update(
+      title: params[:title],
+      category: params[:category],
+      tags: params[:tags],
+      start_time: params[:start_time],
+      ending_time: params[:ending_time],
+      location_type: params[:location_type], # online | offline | both
+      location: params[:location],
+      online_location: params[:online_location],
+      content: params[:content],
+      cover: params[:cover],
+      max_participant: params[:max_participant],
+      need_approval: params[:need_approval],
+      host_info: params[:host_info],
+      )
+    render json: {event: @event.as_json}
+  end
+
+  # http POST "localhost:3000/event/cancel_event"
+  def cancel_event
+    profile = current_profile!
+
+    @event = Event.find(params[:id])
+    raise ActionController::ActionControllerError.new("access denied") unless @event.owner_id == profile.id
+    @event.update(status: "cancel")
+
     render json: {event: @event.as_json}
   end
 

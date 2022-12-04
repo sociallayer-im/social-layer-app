@@ -61,6 +61,8 @@ Rails.application.routes.draw do
     post "event/check", to: "event#check"
     post "event/cancel", to: "event#cancel"
     post "event/create", to: "event#create"
+    post "event/update", to: "event#update"
+    post "event/cancel_event", to: "event#cancel_event"
 
     get "org/list", to: "org#list"
     get "org/get", to: "org#get"

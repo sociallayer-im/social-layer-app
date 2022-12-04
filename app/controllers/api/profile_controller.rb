@@ -12,6 +12,10 @@ class Api::ProfileController < ApiController
     render json: current_address!
   end
 
+  def current_profile
+    render json: (current_profile!).as_json
+  end
+
   def signin
     render layout: false
   end

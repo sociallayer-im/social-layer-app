@@ -27,7 +27,8 @@ class ApiController < ApplicationController
       profile_id = decoded_token[0]["id"]
       @address = Profile.find(profile_id).address
       @address
-    rescue
+    rescue Exception => e
+      puts e.message
       nil
     end
   end
@@ -41,20 +42,33 @@ class ApiController < ApplicationController
   def current_profile
     return Profile.find_by(address: @address) if @address
 
-    token = params[:auth_token]
-    decoded_token = JWT.decode token, $hmac_secret, true, { algorithm: 'HS256' }
-    profile_id = decoded_token[0]["id"]
-    @profile = Profile.find_by(id: profile_id)
+    begin
+      token = params[:auth_token]
+      decoded_token = JWT.decode token, $hmac_secret, true, { algorithm: 'HS256' }
+      profile_id = decoded_token[0]["id"]
+      @profile = Profile.find_by(id: profile_id)
+    rescue Exception => err
+      p err.message
+      Rails.logger.info err.message
+      nil
+    end
   end
 
   def current_profile!
     return Profile.find_by(address: @address) if @address
 
+    begin
     token = params[:auth_token]
     decoded_token = JWT.decode token, $hmac_secret, true, { algorithm: 'HS256' }
     profile_id = decoded_token[0]["id"]
     @profile = Profile.find_by(id: profile_id)
-    raise ActionController::ActionControllerError.new("profile not found") unless @profile
+    rescue Exception => err
+      p err.message
+      Rails.logger.info err.message
+      raise ActionController::ActionControllerError.new(err.message)
+    end
+
+    raise ActionController::ActionControllerError.new("please sign in") unless @profile
     @profile
   end
 

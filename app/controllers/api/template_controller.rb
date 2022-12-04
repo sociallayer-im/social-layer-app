@@ -13,8 +13,10 @@ class Api::TemplateController < ApiController
   end
 
   def update
+    profile = current_profile!
+
     template = Template.find(params[:id])
-    raise ActionController::ActionControllerError.new("access denied") unless template.owner_id == current_address
+    raise ActionController::ActionControllerError.new("access denied") unless template.owner_id == profile.id
 
     template.update(image_url: params[:image_url],content: params[:content],metadata: params[:metadata],)
     render json: {template: template.as_json}
@@ -22,14 +24,14 @@ class Api::TemplateController < ApiController
 
   # http POST "localhost:3000/template/create" owner_id=0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266 name=GoodBadgeTemplate
   def create
-    current_profile!
+    profile = current_profile!
 
     template = Template.create(
       name: params[:name],
       content: params[:content],
       image_url: params[:image_url],
       metadata: params[:metadata],
-      owner_id: current_address,
+      owner_id: profile.id,
       )
     render json: {template: template.as_json}
   end

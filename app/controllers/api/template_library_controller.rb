@@ -13,8 +13,10 @@ class Api::TemplateLibraryController < ApiController
   end
 
   def update
+    profile = current_profile!
+
     template_library = TemplateLibrary.find(params[:id])
-    raise ActionController::ActionControllerError.new("access denied") unless template_library.owner_id == current_address
+    raise ActionController::ActionControllerError.new("access denied") unless template_library.owner_id == profile.id
 
     template_library.update(image_url: params[:image_url],content: params[:content],metadata: params[:metadata],)
     render json: {template_library: template_library.as_json}

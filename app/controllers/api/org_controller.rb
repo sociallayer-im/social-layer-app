@@ -18,7 +18,7 @@ class Api::OrgController < ApiController
 
     org = Org.create(
       name: params[:name],
-      owner_id: profile.address,
+      owner_id: profile.id,
       image_url: params[:image_url],
       content: params[:content],
       metadata: params[:metadata],

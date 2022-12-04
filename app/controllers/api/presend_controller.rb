@@ -8,14 +8,12 @@ class Api::PresendController < ApiController
     end
     @presends = @presends.page(params[:page])
 
-    if current_address
-      @profile = current_profile!
-      if params[:sender_id] && params[:sender_id] == @profile.id.to_s
-        @show_presend_code = true
-      end
+    @profile = current_profile
+    if @profile && params[:sender_id] && params[:sender_id] == @profile.id.to_s
+      @show_presend_code = true
     end
 
-    @show_presend_code = true
+    # @show_presend_code = true
 
     render template: "api/presend/presends"
   end
@@ -24,14 +22,10 @@ class Api::PresendController < ApiController
   def get
     @presend = Presend.includes(:badge).find(params[:id])
 
-    if current_address
-      profile = current_profile!
-      if @presend.sender_id == profile.id
-        @show_presend_code = true
-      end
+    @profile = current_profile
+    if @profile && params[:sender_id] && params[:sender_id] == @profile.id.to_s
+      @show_presend_code = true
     end
-
-    @show_presend_code = true
 
     render template: "api/presend/presend"
   end

@@ -6,6 +6,7 @@ require 'jwt'
 
 $hmac_secret = Rails.application.secret_key_base
 $account_addr = "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+$account_addr2 = "0x70997970c51812dc3a010c7d01b50e0d17dc79c8"
 
 def gen_auth_code(addr)
   payload = {address: addr}

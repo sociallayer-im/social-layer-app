@@ -1,0 +1,11 @@
+data/
+log/
+tmp/
+public/uploads/
+doc/
+coverage/
+
+Dockerfile
+.env
+.env.*
+*.md

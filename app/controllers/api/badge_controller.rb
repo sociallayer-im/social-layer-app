@@ -9,9 +9,8 @@ class Api::BadgeController < ApiController
     if params[:sender_id]
       @badges = @badges.where(sender_id: params[:sender_id])
     end
-    # render json: {badges: badges.page(params[:page])}
 
-    @badges = @badges.page(params[:page])
+    @badges = @badges.order('id desc').page(params[:page]).per(20)
     render template: "api/badge/badges"
   end
 
@@ -22,7 +21,7 @@ class Api::BadgeController < ApiController
     end
 
     # render json: {badges: badges.page(params[:page]).as_json}
-    @badges = @badges.page(params[:page])
+    @badges = @badges.order('id desc').page(params[:page]).per(20)
     render template: "api/badge/badges"
   end
 

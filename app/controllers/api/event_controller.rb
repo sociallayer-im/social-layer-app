@@ -6,7 +6,7 @@ class Api::EventController < ApiController
     if params[:owner_id]
       @events = @events.where(owner_id: params[:owner_id])
     end
-    @events = @events.order('id desc').page(params[:page])
+    @events = @events.order('id desc').page(params[:page]).per(20)
 
     render template: "api/event/events"
   end
@@ -14,7 +14,7 @@ class Api::EventController < ApiController
   def my
     profile = current_profile!
   	@participants = Participant.includes(:event).where(profile_id: profile.id)
-    @participants = @participants.order('id desc').page(params[:page])
+    @participants = @participants.order('id desc').page(params[:page]).per(20)
     render template: "api/event/participating"
   end
 
@@ -29,11 +29,16 @@ class Api::EventController < ApiController
     profile = current_profile!
     @event = Event.find(params[:id])
 
-    @participant = Participant.create(
-    	profile: profile,
-    	event: @event,
-        message: params[:message],
-    	)
+    @participant = Participant.find_by(event_id: params[:id], profile_id: profile.id)
+    if @participant
+      @participant.update(status: "new", message: params[:message])
+    else
+      @participant = Participant.create(
+        profile: profile,
+        event: @event,
+          message: params[:message],
+        )
+    end
 
     render json: {participant: @participant.as_json}
   end

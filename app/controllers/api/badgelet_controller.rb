@@ -29,7 +29,7 @@ class Api::BadgeletController < ApiController
       @badgelets = @badgelets.where(hide: false)
     end
     
-    @badgelets = @badgelets.includes(:badge).page(params[:page])
+    @badgelets = @badgelets.includes(:badge).order('id desc').page(params[:page]).per(20)
     # render json: {badgelets: @badgelets.includes(:badge).page(params[:page]).as_json(include: :badge)}
 
     render template: "api/badge/badgelets"
@@ -39,7 +39,7 @@ class Api::BadgeletController < ApiController
   def search
     badgelets = Badgelet.joins(:badge).where("title LIKE ?", "%" + params[:title] + "%")
 
-    render json: {badgelets: badgelets.page(params[:page]).as_json(include: :badge)}
+    render json: {badgelets: badgelets.order('id desc').page(params[:page]).per(20).as_json(include: :badge)}
   end
 
   # todo : add :page param doc

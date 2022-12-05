@@ -6,7 +6,7 @@ class Api::PresendController < ApiController
     if params[:sender_id]
       @presends = @presends.where(sender_id: params[:sender_id])
     end
-    @presends = @presends.page(params[:page])
+    @presends = @presends.order('id desc').page(params[:page]).per(20)
 
     @profile = current_profile
     if @profile && params[:sender_id] && params[:sender_id] == @profile.id.to_s

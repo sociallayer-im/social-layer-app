@@ -12,7 +12,7 @@ class Api::ProfileController < ApiController
     render json: current_address!
   end
 
-  def current_profile
+  def current_account
     render json: (current_profile!).as_json
   end
 

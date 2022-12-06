@@ -15,7 +15,7 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "api#profile/create" do
-    prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
+    prof = Profile.find_or_create_by(address: $account_addr)
     auth_token = gen_auth_token(prof.id)
     post api_profile_create_url, params: {auth_token: auth_token, username: "coderr"}
     assert_response :success
@@ -33,7 +33,7 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
   # end
 
   test "api#profile/get" do
-    prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
+    prof = Profile.find_or_create_by(address: $account_addr)
     auth_token = gen_auth_token(prof.id)
 
     post api_profile_create_url, params: {auth_token: auth_token, username: "coderr"}

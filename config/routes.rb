@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     get "siwe/nonce", to: "profile#nonce"
     post "siwe/verify", to: "profile#verify"
     get "siwe/current", to: "profile#current"
-    get "siwe/current_profile", to: "profile#current_profile"
+    get "siwe/current_account", to: "profile#current_account"
 
     post "upload/image", to: "profile#upload_image"
 

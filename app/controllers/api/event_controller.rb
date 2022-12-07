@@ -6,6 +6,9 @@ class Api::EventController < ApiController
     if params[:owner_id]
       @events = @events.where(owner_id: params[:owner_id])
     end
+    if params[:tag]
+      @events = @events.where("? = ANY (tags)", params[:tag])
+    end
     @events = @events.order('id desc').page(params[:page]).per(20)
 
     render template: "api/event/events"
@@ -13,7 +16,7 @@ class Api::EventController < ApiController
 
   def my
     profile = current_profile!
-  	@participants = Participant.includes(:event).where(profile_id: profile.id)
+    @participants = Participant.includes(:event).where(profile_id: profile.id)
     @participants = @participants.order('id desc').page(params[:page]).per(20)
     render template: "api/event/participating"
   end

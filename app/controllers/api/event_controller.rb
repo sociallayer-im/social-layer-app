@@ -14,6 +14,13 @@ class Api::EventController < ApiController
     render template: "api/event/events"
   end
 
+  def search
+    @events = Event.where("title LIKE ?", "%" + params[:title] + "%")
+
+    @events = @events.order('id desc').page(params[:page]).per(20)
+    render template: "api/event/events"
+  end
+
   def my
     profile = current_profile!
     @participants = Participant.includes(:event).where(profile_id: profile.id)

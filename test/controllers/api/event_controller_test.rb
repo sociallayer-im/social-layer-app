@@ -52,6 +52,10 @@ class Api::EventControllerTest < ActionDispatch::IntegrationTest
     get api_event_list_url, params: {tag: "live"}
     assert_response :success
     p response.body
+
+    get api_event_search_url, params: {title: "thanks"}
+    assert_response :success
+    p response.body
   end
 
 end

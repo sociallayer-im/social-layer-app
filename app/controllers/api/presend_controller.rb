@@ -9,8 +9,10 @@ class Api::PresendController < ApiController
     @presends = @presends.order('id desc').page(params[:page]).per(20)
 
     @profile = current_profile
-    if @profile && params[:sender_id] && params[:sender_id] == @profile.id.to_s
-      @show_presend_code = true
+    if @profile
+      @show_presend_code_sender_id = @profile.id
+    else
+      @show_presend_code_sender_id = nil
     end
 
     # @show_presend_code = true
@@ -23,7 +25,7 @@ class Api::PresendController < ApiController
     @presend = Presend.includes(:badge).find(params[:id])
 
     @profile = current_profile
-    if @profile && params[:sender_id] && params[:sender_id] == @profile.id.to_s
+    if @profile && @presend.sender_id == @profile.id
       @show_presend_code = true
     end
 

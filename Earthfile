@@ -2,6 +2,7 @@ VERSION 0.6
 FROM ruby:3.1.2
 WORKDIR /app
 ARG IMAGE_VER=1.0.0
+ARG EARTHLY_SOURCE_DATE_EPOCH
 ENV RUBYOPT W0
 
 build:
@@ -13,4 +14,4 @@ build:
     COPY ./config/nginx/ /etc/nginx
     RUN mkdir -p /app/tmp/pids/
     CMD ["bash", "-c", "nginx -c /etc/nginx/nginx.conf && rails s -b 0.0.0.0"]
-    SAVE IMAGE solas:latest solas:$IMAGE_VER
+    SAVE IMAGE --push 240097417872.dkr.ecr.ap-northeast-3.amazonaws.com/solas:latest 240097417872.dkr.ecr.ap-northeast-3.amazonaws.com/solas:$EARTHLY_SOURCE_DATE_EPOCH

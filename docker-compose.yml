@@ -1,0 +1,21 @@
+version: "3.3"
+services:
+  solas-redis:
+    image: redis
+    ports:
+      - "6379"
+
+  solas:
+    image: 240097417872.dkr.ecr.ap-northeast-3.amazonaws.com/solas:latest
+    links:
+      - solas-redis
+    volumes:
+      - log-data:/app/log
+    ports:
+      - 3060:80
+    env_file:
+      - .env
+
+volumes:
+  log-data:
+    driver: local

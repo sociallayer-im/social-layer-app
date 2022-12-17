@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_03_162916) do
+ActiveRecord::Schema[7.0].define(version: 2022_12_17_114016) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -77,6 +77,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_03_162916) do
     t.boolean "hide", default: false
     t.boolean "top", default: false
     t.string "hashtags", array: true
+    t.string "chain_data"
   end
 
   create_table "badges", force: :cascade do |t|
@@ -195,6 +196,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_03_162916) do
     t.datetime "last_signin_at"
     t.string "permissions"
     t.string "token_id"
+    t.string "twitter_proof_url"
     t.index ["address"], name: "index_profiles_on_address", unique: true
     t.index ["domain"], name: "index_profiles_on_domain", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true

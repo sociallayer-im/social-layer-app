@@ -51,4 +51,21 @@ class Api::BadgeletController < ApiController
     render template: "api/badge/badgelet"
   end
 
+  def meta
+    @badgelet = Badgelet.find(params[:id])
+
+    render json: {
+          "name": "social layer",
+          "description": @badgelet.badge.title,
+          "external_url": "https://app.sociallayer.im",
+          "image": @badgelet.badge.image_url,
+          "attributes": []
+    }
+  end
+
+  def chainload
+    @badgelets = Badgelet.where(status: 'accepted', chain_data: nil).order('id desc').page(params[:page]).per(20)
+    render template: "api/badge/badgelets"
+  end
+
 end

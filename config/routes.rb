@@ -5,6 +5,8 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "api/profile#home"
 
+  get "meta/:id", to: "api/badgelet#meta"
+
   namespace :api, path: "" do
     get "profile/signin", to: "profile#signin"
     get "siwe/nonce", to: "profile#nonce"
@@ -48,6 +50,7 @@ Rails.application.routes.draw do
     get "badgelet/list", to: "badgelet#list"
     get "badgelet/search", to: "badgelet#search"
     get "badgelet/get", to: "badgelet#get"
+    get "badgelet/chainload", to: "badgelet#chainload"
 
     get "presend/list", to: "presend#list"
     get "presend/get", to: "presend#get"

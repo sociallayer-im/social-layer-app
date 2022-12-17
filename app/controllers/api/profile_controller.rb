@@ -178,6 +178,7 @@ MESSAGE_END
   end
 
   # http GET "localhost:3000/profile/get" address==0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+  # http GET "localhost:3000/profile/get" twitter==coder
   # http GET "localhost:3000/profile/get" username==coder
   # http GET "localhost:3000/profile/get" email==coder@email.com
   # http GET "localhost:3000/profile/get" domain==coder.sociallayer.im
@@ -188,6 +189,8 @@ MESSAGE_END
       profile = Profile.find(params[:id])
     elsif params[:username]
       profile = Profile.where(username: params[:username]).first
+    elsif params[:twitter]
+      profile = Profile.where(twitter: params[:twitter]).first
     elsif params[:domain]
       profile = Profile.where(domain: params[:domain]).first
     elsif params[:email]

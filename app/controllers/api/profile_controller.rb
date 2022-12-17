@@ -1,6 +1,9 @@
 require 'jwt'
+require 'aws-sdk'
 
 $hmac_secret = Rails.application.secret_key_base
+region = "ap-northeast-3"
+$ses = Aws::SES::Client.new(region: region)
 
 class Api::ProfileController < ApiController
 
@@ -71,7 +74,38 @@ class Api::ProfileController < ApiController
     p token
 
     unless ENV["DO_NOT_SEND_EMAIL"]
-      MailerJob.perform_async(params[:email], code)
+      # MailerJob.perform_async(params[:email], code)
+
+      sender = "sender@sociallayer.im"
+      recipient = params[:email]
+      encoding = "UTF-8"
+      subject = "Social Layer SignIn"
+      textbody = <<MESSAGE_END
+This is an e-mail message to login sociallayer.im.
+Sign In Code: #{code}
+MESSAGE_END
+
+      resp = $ses.send_email({
+      destination: {
+        to_addresses: [
+          recipient,
+        ],
+      },
+      message: {
+        body: {
+          text: {
+            charset: encoding,
+            data: textbody,
+          },
+        },
+        subject: {
+          charset: encoding,
+          data: subject,
+        },
+      },
+      source: sender,
+      })
+
     end
 
     render json: {result: "ok", email: params[:email]}

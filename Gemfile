@@ -38,6 +38,9 @@ gem "jwt"
 gem "siwe"
 gem "kaminari"
 
+gem "aws-sdk", "~> 3"
+gem "oga"
+
 gem "imagekitio"
 gem "appsignal"
 gem "ed25519", "1.3.0"

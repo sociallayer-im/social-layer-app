@@ -1,5 +1,5 @@
 json.badgelet do
-  json.(@badgelet, :id, :badge_id, :hide, :top, :status, :metadata, :content, :hashtags, :subject_url, :domain, :token_id, :value, :last_consumed_at)
+  json.(@badgelet, :id, :badge_id, :hide, :top, :status, :metadata, :content, :hashtags, :chain_data, :subject_url, :domain, :token_id, :value, :last_consumed_at)
 
   if @badgelet.receiver
     json.receiver do

@@ -12,6 +12,31 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
     auth_token = gen_auth_token(prof.id)
     get api_siwe_current_url, params: {auth_token: auth_token}
     assert_response :success
+    p response.body
+
+    prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
+    auth_token = gen_wrong_auth_token(prof.id)
+    get api_siwe_current_url, params: {auth_token: auth_token}
+    p response.body
+
+    get api_siwe_current_url
+    p response.body
+  end
+
+  test "api#profile/current_account" do
+    prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
+    auth_token = gen_auth_token(prof.id)
+    get api_siwe_current_url, params: {auth_token: auth_token}
+    assert_response :success
+    p response.body
+
+    prof = Profile.find_or_create_by(address: $account_addr, username: "coderr", domain: "coderr.sociallayer.im")
+    auth_token = gen_wrong_auth_token(prof.id)
+    get api_siwe_current_account_url, params: {auth_token: auth_token}
+    p response.body
+
+    get api_siwe_current_account_url
+    p response.body
   end
 
   test "api#profile/create" do

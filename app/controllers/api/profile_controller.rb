@@ -8,7 +8,19 @@ $ses = Aws::SES::Client.new(region: region)
 class Api::ProfileController < ApiController
 
   def home
-    render json: {result: "ok"}
+    domain = request.host
+    matched = /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.sociallayer\.im$/.match(domain)
+    if matched
+      matched = matched.to_s
+      profile = Profile.find_by(domain: matched)
+      if profile && profile.address
+        redirect_to "https://app.sociallayer.im/profile?uid=#{profile.address}"
+      else
+        redirect_to "https://app.sociallayer.im/"
+      end
+    else
+      render json: {result: "ok"}
+    end
   end
 
   def current

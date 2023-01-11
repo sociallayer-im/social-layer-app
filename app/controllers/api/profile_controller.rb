@@ -11,13 +11,8 @@ class Api::ProfileController < ApiController
     domain = request.host
     matched = /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.sociallayer\.im$/.match(domain)
     if matched
-      matched = matched.to_s
-      profile = Profile.find_by(domain: matched)
-      if profile && profile.address
-        redirect_to "https://app.sociallayer.im/profile?uid=#{profile.address}", allow_other_host: true
-      else
-        redirect_to "https://app.sociallayer.im/", allow_other_host: true
-      end
+      matched = matched.to_s.sub(".sociallayer.im", "")
+      redirect_to "https://app.sociallayer.im/profile/#{matched}", allow_other_host: true
     else
       render json: {result: "ok"}
     end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_11_080540) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_11_080748) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -131,6 +131,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_11_080540) do
     t.string "category"
     t.string "tags", array: true
     t.string "online_location"
+  end
+
+  create_table "followings", force: :cascade do |t|
+    t.integer "profile_id"
+    t.integer "target_id"
+    t.datetime "created_at"
+    t.string "role"
   end
 
   create_table "mail_tokens", force: :cascade do |t|

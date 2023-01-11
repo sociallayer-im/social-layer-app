@@ -59,6 +59,7 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
 
   test "api#profile/get" do
     prof = Profile.find_or_create_by(address: $account_addr)
+    prof2 = Profile.find_or_create_by(address: $account_addr2)
     auth_token = gen_auth_token(prof.id)
 
     post api_profile_create_url, params: {auth_token: auth_token, username: "coderr"}
@@ -78,6 +79,26 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
     p response.body
 
     get api_profile_search_url, params: {username: "cod"}
+    assert_response :success
+    p response.body
+
+    post api_profile_follow_url, params: {auth_token: auth_token, target_id: prof2.id}
+    assert_response :success
+    p response.body
+
+    get api_profile_followers_url, params: {id: prof2.id}
+    assert_response :success
+    p response.body
+
+    get api_profile_followings_url, params: {id: prof.id}
+    assert_response :success
+    p response.body
+
+    post api_profile_unfollow_url, params: {auth_token: auth_token, target_id: prof2.id}
+    assert_response :success
+    p response.body
+
+    get api_profile_followings_url, params: {id: prof.id}
     assert_response :success
     p response.body
   end

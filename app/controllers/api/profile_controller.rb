@@ -244,4 +244,40 @@ MESSAGE_END
       render json: {result: "ok"}
     end
   end
+
+  # http GET "localhost:3000/profile/followers" id==1
+  def followers
+    profile = Profile.find(params[:id])
+    followers = profile.followers
+    render json: {followers: followers.as_json}
+  end
+
+  # http GET "localhost:3000/profile/followings" id==1
+  def followings
+    profile = Profile.find(params[:id])
+    followings = profile.followings
+    render json: {followings: followings.as_json}
+  end
+
+  # http POST "localhost:3000/profile/follow" target_id=2
+  def follow
+    profile = current_profile!
+    target = Profile.find(params[:target_id])
+
+    if Following.find_by(profile_id: profile.id, target_id: target.id)
+      render json: {result: "error", message: "follow exists"}
+      return
+    end
+    Following.create(profile_id: profile.id, target_id: target.id, role: 'follower')
+    render json: {result: "ok"}
+  end
+
+  # http POST "localhost:3000/profile/unfollow" target_id=2
+  def unfollow
+    profile = current_profile!
+    target = Profile.find(params[:target_id])
+
+    results = Following.where(profile_id: profile.id, target_id: params[:target_id], role: 'follower').delete_all
+    render json: {result: "ok"}
+  end
 end

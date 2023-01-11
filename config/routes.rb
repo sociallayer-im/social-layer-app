@@ -25,6 +25,11 @@ Rails.application.routes.draw do
     post "profile/signin_with_email", to: "profile#signin_with_email"
     post "profile/set_verified_address", to: "profile#set_verified_address"
 
+    get "profile/followers", to: "profile#followers"
+    get "profile/followings", to: "profile#followings"
+    post "profile/follow", to: "profile#follow"
+    post "profile/unfollow", to: "profile#unfollow"
+
     get "template/list", to: "template#list"
     get "template/get", to: "template#get"
     post "template/create", to: "template#create"
@@ -75,5 +80,14 @@ Rails.application.routes.draw do
     get "org/members", to: "org#members"
     post "org/add-member", to: "org#add_member"
     post "org/remove-member", to: "org#remove_member"
+
+    get "group/list", to: "group#list"
+    get "group/get", to: "group#get"
+    post "group/create", to: "group#create"
+    post "group/update", to: "group#update"
+    get "group/members", to: "group#members"
+    post "group/add-member", to: "group#add_member"
+    post "group/remove-member", to: "group#remove_member"
+
   end
 end

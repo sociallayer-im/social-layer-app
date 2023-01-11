@@ -1,7 +1,7 @@
 json.badge do
   json.(@badge, 
     :id, :name, :domain, :title, :metadata, :content, :image_url,
-      :token_id, :template_id, :resource_type, :resource_url, :subject_url, :badge_class, :hashtags, :unlocking, :counter)
+      :token_id, :template_id, :resource_type, :resource_url, :subject_url, :badge_class, :hashtags, :created_at, :unlocking, :counter)
 
   if @badge.badge_library
     json.badge_library do
@@ -48,7 +48,7 @@ json.badge do
   end
 
   json.badgelets @badge.badgelets do |badgelet|
-    json.(badgelet, :id, :badge_id, :hide, :top, :status, :metadata, :content, :hashtags, :chain_data, :subject_url, :domain, :token_id, :value, :last_consumed_at)
+    json.(badgelet, :id, :badge_id, :hide, :top, :status, :metadata, :content, :hashtags, :chain_data, :subject_url, :domain, :token_id, :created_at, :value, :last_consumed_at)
     
     if badgelet.receiver
       json.receiver do

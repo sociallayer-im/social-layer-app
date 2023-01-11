@@ -1,7 +1,7 @@
 json.badge do
   json.(@badge, 
     :id, :name, :domain, :title, :metadata, :content, :image_url,
-      :token_id, :template_id, :resource_type, :resource_url, :subject_url, :badge_class, :hashtags, :unlocking, :counter)
+      :token_id, :template_id, :resource_type, :resource_url, :subject_url, :badge_class, :hashtags, :created_at, :unlocking, :counter)
 
   if @badge.badge_library
     json.badge_library do

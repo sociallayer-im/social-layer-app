@@ -59,7 +59,7 @@ class Api::ProfileControllerTest < ActionDispatch::IntegrationTest
 
   test "api#profile/get" do
     prof = Profile.find_or_create_by(address: $account_addr)
-    prof2 = Profile.find_or_create_by(address: $account_addr2)
+    prof2 = Profile.find_or_create_by(address: $account_addr2, username: "moverr", domain: "moverr.sociallayer.im")
     auth_token = gen_auth_token(prof.id)
 
     post api_profile_create_url, params: {auth_token: auth_token, username: "coderr"}

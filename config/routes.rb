@@ -89,5 +89,9 @@ Rails.application.routes.draw do
     post "group/add-member", to: "group#add_member"
     post "group/remove-member", to: "group#remove_member"
 
+    get "group/group-invites", to: "group#group_invites"
+    post "group/send-invite", to: "group#send_invite"
+    post "group/accept-invite", to: "group#accept_invite"
+
   end
 end

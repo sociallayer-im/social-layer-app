@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_11_080748) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_11_165118) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -138,6 +138,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_11_080748) do
     t.integer "target_id"
     t.datetime "created_at"
     t.string "role"
+  end
+
+  create_table "group_invites", force: :cascade do |t|
+    t.integer "sender_id"
+    t.integer "group_id"
+    t.integer "badge_id"
+    t.string "message"
+    t.datetime "expires_at"
+    t.integer "presend_id"
+    t.integer "receiver_id"
+    t.integer "badgelet_id"
+    t.boolean "accepted", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "mail_tokens", force: :cascade do |t|

@@ -48,6 +48,7 @@ gem "bcrypt_pbkdf", "1.1.0"
 gem "keccak", "~> 1.3"
 
 gem "rails_admin", "~> 3.0"
+gem "typesense"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"

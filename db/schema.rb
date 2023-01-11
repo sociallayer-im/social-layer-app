@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_12_17_114016) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_11_080540) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -197,6 +197,9 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_17_114016) do
     t.string "permissions"
     t.string "token_id"
     t.string "twitter_proof_url"
+    t.text "about"
+    t.boolean "is_group"
+    t.integer "group_owner_id"
     t.index ["address"], name: "index_profiles_on_address", unique: true
     t.index ["domain"], name: "index_profiles_on_domain", unique: true
     t.index ["username"], name: "index_profiles_on_username", unique: true
